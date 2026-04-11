@@ -7,6 +7,9 @@ import AdminRoute from './components/AdminRoute';
 import UserLoginPage from './pages/UserLoginPage';
 import AdminLoginPage from './pages/AdminLoginPage';
 import UserRegisterPage from './pages/UserRegisterPage';
+import AdminLayout from './layouts/AdminLayout';
+import AdminDashboardPage from './pages/admin/AdminDashboardPage';
+import AdminUsersPage from './pages/admin/AdminUsersPage';
 import './index.css';
 
 function App() {
@@ -39,20 +42,10 @@ function App() {
 
                     {/* Admin Routes */}
                     <Route element={<AdminRoute />}>
-                        <Route
-                            path="/admin"
-                            element={
-                                <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-purple-50 to-indigo-50">
-                                    <div className="text-center">
-                                        <h1 className="text-5xl font-bold text-gray-800 mb-4">Admin Dashboard</h1>
-                                        <p className="text-xl text-gray-600 mb-8">Manage your e-commerce platform</p>
-                                        <div className="bg-white p-8 rounded-lg shadow-md">
-                                            <p className="text-gray-700">👨‍💼 Coming Soon: Products, Orders, Users & Analytics</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            }
-                        />
+                        <Route path="/admin" element={<AdminLayout />}>
+                            <Route index element={<AdminDashboardPage />} />
+                            <Route path="users" element={<AdminUsersPage />} />
+                        </Route>
                     </Route>
 
                     {/* Catch-all redirect */}
