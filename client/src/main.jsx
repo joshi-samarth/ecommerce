@@ -17,6 +17,8 @@ import ProfileTab from './pages/user/ProfileTab';
 import AddressTab from './pages/user/AddressTab';
 import OrdersTab from './pages/user/OrdersTab';
 import SecurityTab from './pages/user/SecurityTab';
+import ProductsPage from './pages/shop/ProductsPage';
+import ProductDetailPage from './pages/shop/ProductDetailPage';
 import './index.css';
 
 function App() {
@@ -32,6 +34,10 @@ function App() {
                     {/* Private Routes */}
                     <Route element={<PrivateRoute />}>
                         <Route path="/" element={<HomePage />} />
+
+                        {/* Products Routes */}
+                        <Route path="/products" element={<ProductsPage />} />
+                        <Route path="/products/:slug" element={<ProductDetailPage />} />
 
                         {/* User Account Routes */}
                         <Route path="/account" element={<UserLayout />}>
