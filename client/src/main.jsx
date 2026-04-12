@@ -7,9 +7,16 @@ import AdminRoute from './components/AdminRoute';
 import UserLoginPage from './pages/UserLoginPage';
 import AdminLoginPage from './pages/AdminLoginPage';
 import UserRegisterPage from './pages/UserRegisterPage';
+import HomePage from './pages/HomePage';
 import AdminLayout from './layouts/AdminLayout';
 import AdminDashboardPage from './pages/admin/AdminDashboardPage';
 import AdminUsersPage from './pages/admin/AdminUsersPage';
+import UserLayout from './layouts/UserLayout';
+import AccountPage from './pages/user/AccountPage';
+import ProfileTab from './pages/user/ProfileTab';
+import AddressTab from './pages/user/AddressTab';
+import OrdersTab from './pages/user/OrdersTab';
+import SecurityTab from './pages/user/SecurityTab';
 import './index.css';
 
 function App() {
@@ -24,20 +31,16 @@ function App() {
 
                     {/* Private Routes */}
                     <Route element={<PrivateRoute />}>
-                        <Route
-                            path="/"
-                            element={
-                                <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
-                                    <div className="text-center">
-                                        <h1 className="text-5xl font-bold text-gray-800 mb-4">Welcome to ShopHub</h1>
-                                        <p className="text-xl text-gray-600 mb-8">Your favorite e-commerce destination</p>
-                                        <div className="bg-white p-8 rounded-lg shadow-md">
-                                            <p className="text-gray-700">🛍️ Coming Soon: Product Catalog, Shopping Cart & Checkout</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            }
-                        />
+                        <Route path="/" element={<HomePage />} />
+
+                        {/* User Account Routes */}
+                        <Route path="/account" element={<UserLayout />}>
+                            <Route index element={<Navigate to="/account/profile" replace />} />
+                            <Route path="profile" element={<ProfileTab />} />
+                            <Route path="addresses" element={<AddressTab />} />
+                            <Route path="orders" element={<OrdersTab />} />
+                            <Route path="security" element={<SecurityTab />} />
+                        </Route>
                     </Route>
 
                     {/* Admin Routes */}
