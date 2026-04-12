@@ -2,6 +2,7 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 const Category = require('./models/Category');
 const Product = require('./models/Product');
+const Coupon = require('./models/Coupon');
 
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/ecommerce';
 
@@ -14,6 +15,7 @@ const seedData = async () => {
         // Clear existing data
         await Category.deleteMany({});
         await Product.deleteMany({});
+        await Coupon.deleteMany({});
         console.log('Cleared existing data');
 
         // Create categories one by one to trigger pre-save hooks
@@ -208,6 +210,48 @@ const seedData = async () => {
             products.push(product);
         }
         console.log('Products created:', products.length);
+
+        // Create sample coupons
+        const couponsData = [
+            {
+                code: 'WELCOME10',
+                type: 'percent',
+                value: 10,
+                minOrderValue: 500,
+                maxDiscount: 200,
+                usageLimit: 0,
+                isActive: true,
+                expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 year from now
+            },
+            {
+                code: 'FLAT100',
+                type: 'flat',
+                value: 100,
+                minOrderValue: 1000,
+                maxDiscount: 0,
+                usageLimit: 0,
+                isActive: true,
+                expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 year from now
+            },
+            {
+                code: 'SAVE20',
+                type: 'percent',
+                value: 20,
+                minOrderValue: 2000,
+                maxDiscount: 500,
+                usageLimit: 0,
+                isActive: true,
+                expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 year from now
+            },
+        ];
+
+        const coupons = [];
+        for (const couponData of couponsData) {
+            const coupon = new Coupon(couponData);
+            await coupon.save();
+            coupons.push(coupon);
+        }
+        console.log('Coupons created:', coupons.length);
 
         console.log('\n✅ Database seeded successfully!');
         process.exit(0);

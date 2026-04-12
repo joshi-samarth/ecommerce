@@ -1,10 +1,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ShoppingCart, Heart } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useCart } from '../hooks/useCart';
 
 const HomePage = () => {
     const navigate = useNavigate();
     const { user, logout } = useAuth();
+    const { cart, openDrawer } = useCart();
 
     const handleLogout = async () => {
         await logout();
@@ -31,6 +34,27 @@ const HomePage = () => {
                             className="text-gray-700 hover:text-blue-600 font-medium transition"
                         >
                             🛍️ Products
+                        </button>
+
+                        {/* Cart Icon */}
+                        <button
+                            onClick={openDrawer}
+                            className="relative text-gray-700 hover:text-blue-600 transition"
+                        >
+                            <ShoppingCart size={24} />
+                            {cart.itemCount > 0 && (
+                                <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
+                                    {cart.itemCount}
+                                </span>
+                            )}
+                        </button>
+
+                        {/* Wishlist Icon */}
+                        <button
+                            onClick={() => navigate('/wishlist')}
+                            className="text-gray-700 hover:text-blue-600 transition"
+                        >
+                            <Heart size={24} />
                         </button>
 
                         {/* User Menu */}

@@ -1,11 +1,13 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
+import Navbar from '../components/shared/Navbar';
 import AccountSidebar from '../components/user/AccountSidebar';
 
 const UserLayout = () => {
     return (
-        <div className="min-h-screen bg-gray-50 py-8">
-            <div className="max-w-5xl mx-auto px-4">
+        <div className="min-h-screen bg-gray-50">
+            <Navbar showBackButton={true} title="My Account" />
+            <div className="max-w-5xl mx-auto px-4 py-8">
                 <div className="flex flex-col lg:flex-row gap-6">
                     {/* Sidebar - Fixed width on desktop, responsive on mobile */}
                     <div className="lg:w-60 flex-shrink-0">

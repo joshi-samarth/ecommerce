@@ -1,10 +1,16 @@
-import { Heart, ShoppingCart } from 'lucide-react';
+import { ShoppingCart } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import RatingStars from './RatingStars';
 import PriceDisplay from './PriceDisplay';
+import WishlistButton from './WishlistButton';
+import { useCart } from '../../hooks/useCart';
+import toast from 'react-hot-toast';
 
 export default function ProductCard({ product }) {
     const navigate = useNavigate();
+    const { user } = useAuth();
+    const { addToCart, openDrawer } = useCart();
     const image = product.images && product.images.length > 0
         ? product.images[0]
         : 'https://via.placeholder.com/400x400?text=No+Image';
@@ -14,16 +20,21 @@ export default function ProductCard({ product }) {
         navigate(`/products/${product.slug}`);
     };
 
-    const handleAddToCart = (e) => {
+    const handleAddToCart = async (e) => {
         e.stopPropagation();
-        // TODO: Wire to CartContext in Module 5
-        console.log('Add to cart:', product._id);
-    };
 
-    const handleAddToWishlist = (e) => {
-        e.stopPropagation();
-        // TODO: Wire to WishlistContext in Module 5
-        console.log('Add to wishlist:', product._id);
+        if (!user) {
+            toast.error('Login to add items to cart');
+            navigate('/login');
+            return;
+        }
+
+        try {
+            await addToCart(product._id, 1);
+            openDrawer();
+        } catch (error) {
+            console.error('Error adding to cart:', error);
+        }
     };
 
     return (
@@ -47,13 +58,9 @@ export default function ProductCard({ product }) {
                 )}
 
                 {/* Wishlist Button */}
-                <button
-                    onClick={handleAddToWishlist}
-                    className="absolute top-2 right-2 bg-white rounded-full p-2 shadow-md hover:bg-gray-100 transition-colors"
-                    aria-label="Add to wishlist"
-                >
-                    <Heart size={18} className="text-gray-600" />
-                </button>
+                <div className="absolute top-2 right-2">
+                    <WishlistButton productId={product._id} size="sm" />
+                </div>
 
                 {/* Out of Stock Overlay */}
                 {isOutOfStock && (
@@ -89,8 +96,8 @@ export default function ProductCard({ product }) {
                     onClick={handleAddToCart}
                     disabled={isOutOfStock}
                     className={`w-full py-2 px-4 rounded-lg font-semibold flex items-center justify-center gap-2 transition-colors ${isOutOfStock
-                            ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                            : 'bg-primary text-white hover:bg-primary-dark'
+                        ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                        : 'bg-primary text-white hover:bg-primary-dark'
                         }`}
                 >
                     <ShoppingCart size={16} />

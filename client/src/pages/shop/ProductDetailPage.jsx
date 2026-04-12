@@ -1,17 +1,22 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { Heart, ShoppingCart, ChevronLeft, ChevronRight, Trash2 } from 'lucide-react';
+import { ShoppingCart, ChevronLeft, ChevronRight, Trash2 } from 'lucide-react';
+import Navbar from '../../components/shared/Navbar';
 import Breadcrumb from '../../components/shop/Breadcrumb';
 import RatingStars from '../../components/shop/RatingStars';
 import PriceDisplay from '../../components/shop/PriceDisplay';
 import ProductGrid from '../../components/shop/ProductGrid';
+import WishlistButton from '../../components/shop/WishlistButton';
 import axios from '../../api/axios';
 import { useAuth } from '../../context/AuthContext';
+import { useCart } from '../../hooks/useCart';
+import toast from 'react-hot-toast';
 
 export default function ProductDetailPage() {
     const { slug } = useParams();
     const navigate = useNavigate();
     const { user } = useAuth();
+    const { addToCart, openDrawer } = useCart();
 
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -60,14 +65,24 @@ export default function ProductDetailPage() {
         fetchProduct();
     }, [slug]);
 
-    const handleAddToCart = () => {
-        // TODO: Wire to CartContext in Module 5
-        console.log('Add to cart:', product._id, quantity);
-    };
+    const handleAddToCart = async () => {
+        if (!user) {
+            toast.error('Login to add items to cart');
+            navigate('/login');
+            return;
+        }
 
-    const handleAddToWishlist = () => {
-        // TODO: Wire to WishlistContext in Module 5
-        console.log('Add to wishlist:', product._id);
+        if (quantity < 1) {
+            toast.error('Please select a valid quantity');
+            return;
+        }
+
+        try {
+            await addToCart(product._id, quantity);
+            openDrawer();
+        } catch (error) {
+            console.error('Error adding to cart:', error);
+        }
     };
 
     const handleSubmitReview = async (e) => {
@@ -161,6 +176,7 @@ export default function ProductDetailPage() {
 
     return (
         <div className="min-h-screen bg-gray-50">
+            <Navbar showBackButton={true} title={product?.name} />
             <div className="max-w-7xl mx-auto px-4 py-6">
                 {/* Breadcrumb */}
                 <Breadcrumb items={breadcrumbs} />
@@ -246,20 +262,17 @@ export default function ProductDetailPage() {
                                     onClick={handleAddToCart}
                                     disabled={product.stock === 0}
                                     className={`flex-1 py-3 px-4 rounded-lg font-semibold flex items-center justify-center gap-2 transition-colors ${product.stock === 0
-                                            ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                                            : 'bg-primary text-white hover:bg-primary-dark'
+                                        ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                                        : 'bg-primary text-white hover:bg-primary-dark'
                                         }`}
                                 >
                                     <ShoppingCart size={20} />
                                     Add to Cart
                                 </button>
-                                <button
-                                    onClick={handleAddToWishlist}
-                                    className="py-3 px-6 rounded-lg border border-gray-300 font-semibold hover:bg-gray-50 transition-colors flex items-center justify-center gap-2"
-                                >
-                                    <Heart size={20} />
-                                    Wishlist
-                                </button>
+                                <div className="py-3 px-6 rounded-lg border border-gray-300 font-semibold hover:bg-gray-50 transition-colors flex items-center justify-center gap-2">
+                                    <WishlistButton productId={product._id} size="md" />
+                                    <span>Wishlist</span>
+                                </div>
                             </div>
 
                             {/* Product Meta */}
@@ -300,8 +313,8 @@ export default function ProductDetailPage() {
                                 key={tab}
                                 onClick={() => setActiveTab(tab)}
                                 className={`flex-1 py-4 font-semibold transition-colors ${activeTab === tab
-                                        ? 'text-primary border-b-2 border-primary'
-                                        : 'text-gray-600 hover:text-gray-900'
+                                    ? 'text-primary border-b-2 border-primary'
+                                    : 'text-gray-600 hover:text-gray-900'
                                     }`}
                             >
                                 {tab === 'description' && 'Description'}
