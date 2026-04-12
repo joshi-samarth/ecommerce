@@ -6,8 +6,15 @@ const mongoose = require('mongoose');
 // @access  Private
 const getProfile = async (req, res, next) => {
     try {
-        // req.user is already set by protect middleware
-        const user = req.user;
+        // Fetch fresh user data to ensure createdAt is included
+        const user = await User.findById(req.user._id).select('-password');
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found',
+            });
+        }
 
         res.status(200).json({
             success: true,

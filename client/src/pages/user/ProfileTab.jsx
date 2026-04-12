@@ -67,12 +67,22 @@ const ProfileTab = () => {
         }
     };
 
-    // Format date
+    // Format date - handle both Date objects and date strings
     const formatDate = (date) => {
-        return new Date(date).toLocaleDateString('en-IN', {
-            year: 'numeric',
-            month: 'long',
-        });
+        try {
+            if (!date) return 'N/A';
+            const dateObj = new Date(date);
+            if (isNaN(dateObj.getTime())) {
+                return 'Invalid Date';
+            }
+            return dateObj.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+            });
+        } catch (err) {
+            return 'Invalid Date';
+        }
     };
 
     if (!user) {
