@@ -30,12 +30,20 @@ exports.toggleWishlist = async (req, res) => {
     try {
         const { productId } = req.body;
 
+        // Validate productId is provided
+        if (!productId) {
+            return res.status(400).json({
+                success: false,
+                message: 'Product ID is required',
+            });
+        }
+
         // Validate product exists
         const product = await Product.findById(productId);
         if (!product) {
             return res.status(404).json({
                 success: false,
-                message: 'Product not found',
+                message: 'Product not found. Please refresh and try again.',
             });
         }
 

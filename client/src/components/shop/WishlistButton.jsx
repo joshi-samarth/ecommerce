@@ -24,6 +24,12 @@ export default function WishlistButton({ productId, size = 'md' }) {
             return;
         }
 
+        if (!productId) {
+            toast.error('Product information not available');
+            console.warn('WishlistButton: productId is missing or invalid');
+            return;
+        }
+
         try {
             await toggleWishlist(productId);
         } catch (error) {

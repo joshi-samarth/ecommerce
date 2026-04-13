@@ -3,11 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { ShoppingCart, Heart } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../hooks/useCart';
+import { useWishlist } from '../hooks/useWishlist';
 
 const HomePage = () => {
     const navigate = useNavigate();
     const { user, logout } = useAuth();
     const { cart, openDrawer } = useCart();
+    const { wishlistItems } = useWishlist();
 
     const handleLogout = async () => {
         await logout();
@@ -52,9 +54,14 @@ const HomePage = () => {
                         {/* Wishlist Icon */}
                         <button
                             onClick={() => navigate('/wishlist')}
-                            className="text-gray-700 hover:text-blue-600 transition"
+                            className="relative text-gray-700 hover:text-blue-600 transition"
                         >
                             <Heart size={24} />
+                            {wishlistItems.length > 0 && (
+                                <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
+                                    {wishlistItems.length}
+                                </span>
+                            )}
                         </button>
 
                         {/* User Menu */}

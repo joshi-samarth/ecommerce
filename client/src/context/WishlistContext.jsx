@@ -37,6 +37,10 @@ export function WishlistProvider({ children }) {
     const toggleWishlist = useCallback(
         async (productId) => {
             try {
+                if (!productId) {
+                    throw new Error('Product ID is required');
+                }
+
                 // Optimistic update
                 setWishlistItems((prev) => {
                     if (prev.includes(productId)) {
@@ -60,11 +64,18 @@ export function WishlistProvider({ children }) {
                         toast.success('Removed from wishlist');
                     }
                     return response.data.data;
+                } else {
+                    // If success is false, revert and show error
+                    await fetchWishlist();
+                    const errorMsg = response.data.message || 'Failed to update wishlist';
+                    toast.error(errorMsg);
+                    throw new Error(errorMsg);
                 }
             } catch (error) {
                 // Revert optimistic update
                 await fetchWishlist();
-                const message = error.response?.data?.message || 'Failed to update wishlist';
+                const message = error.response?.data?.message || error.message || 'Failed to update wishlist';
+                console.error('Wishlist toggle error:', message);
                 toast.error(message);
                 throw error;
             }
