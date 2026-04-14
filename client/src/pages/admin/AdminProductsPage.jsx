@@ -145,9 +145,10 @@ export default function AdminProductsPage() {
                 return;
             }
             setActionLoading(true);
-            const res = await axios.delete(`/api/admin/products/${productId}`);
+            // Use hard delete endpoint to permanently remove from database
+            const res = await axios.delete(`/api/admin/products/${productId}/hard`);
             if (res.data.success) {
-                toast.success('Product deleted');
+                toast.success('Product permanently deleted');
                 setProducts((prev) => prev.filter((p) => p._id !== productId));
                 setDeleteConfirm({ isOpen: false, product: null });
             }
@@ -282,10 +283,10 @@ export default function AdminProductsPage() {
             <ConfirmDialog
                 isOpen={deleteConfirm.isOpen}
                 title="Delete Product"
-                message={`Are you sure you want to delete "${deleteConfirm.product?.name}"? This will make it inactive but keep it in the database.`}
-                confirmLabel="Delete"
+                message={`Are you sure you want to permanently delete "${deleteConfirm.product?.name}"? This action cannot be undone. The product will be completely removed from the database and all images will be deleted from Cloudinary.`}
+                confirmLabel="Delete Permanently"
                 confirmVariant="danger"
-                onConfirm={handleDelete}
+                onConfirm={() => handleDelete(deleteConfirm.product?._id)}
                 onCancel={() => setDeleteConfirm({ isOpen: false, product: null })}
             />
         </div>

@@ -450,7 +450,10 @@ exports.deleteProduct = async (req, res) => {
         const { id } = req.params;
 
         // Soft delete
-        const product = await Product.findByIdAndUpdate(id, { isActive: false }, { new: true });
+        const product = await Product.findByIdAndUpdate(id, { isActive: false }, { new: true }).populate(
+            'category',
+            'name slug'
+        );
         if (!product) {
             return res.status(404).json({
                 success: false,
@@ -461,12 +464,13 @@ exports.deleteProduct = async (req, res) => {
         // Remove from all wishlists
         await User.updateMany({}, { $pull: { wishlistItems: id } });
 
-        // Remove from all active carts
-        await Cart.updateMany({}, { $pull: { 'items.product': id } });
+        // Remove from all active carts - remove items where product matches
+        await Cart.updateMany({}, { $pull: { items: { product: id } } });
 
         res.status(200).json({
             success: true,
-            message: 'Product deactivated',
+            message: 'Product deleted',
+            data: product,
         });
     } catch (error) {
         res.status(500).json({
@@ -504,8 +508,8 @@ exports.hardDeleteProduct = async (req, res) => {
         // Remove from wishlists
         await User.updateMany({}, { $pull: { wishlistItems: id } });
 
-        // Remove from carts
-        await Cart.updateMany({}, { $pull: { 'items.product': id } });
+        // Remove from carts - remove items where product matches
+        await Cart.updateMany({}, { $pull: { items: { product: id } } });
 
         // Delete product
         await Product.findByIdAndDelete(id);
@@ -513,6 +517,7 @@ exports.hardDeleteProduct = async (req, res) => {
         res.status(200).json({
             success: true,
             message: 'Product permanently deleted',
+            data: product,
         });
     } catch (error) {
         res.status(500).json({

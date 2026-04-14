@@ -110,7 +110,7 @@ exports.createCoupon = async (req, res) => {
             maxDiscount: maxDiscount ? parseFloat(maxDiscount) : null,
             usageLimit: usageLimit ? parseInt(usageLimit) : 0, // 0 = unlimited
             expiresAt: expiresAt ? new Date(expiresAt) : null,
-            isActive: isActive === 'true' || isActive === true || true,
+            isActive: isActive === 'true' || isActive === true,
         });
 
         res.status(201).json({
