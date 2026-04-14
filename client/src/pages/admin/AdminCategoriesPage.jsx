@@ -89,6 +89,10 @@ export default function AdminCategoriesPage() {
 
     const handleDeleteConfirm = async () => {
         try {
+            if (!deleteConfirm.category?._id) {
+                toast.error('Category ID missing');
+                return;
+            }
             setFormLoading(true);
             const res = await axios.delete(`/api/admin/categories/${deleteConfirm.category._id}`);
             if (res.data.success) {
@@ -154,8 +158,8 @@ export default function AdminCategoriesPage() {
                 isOpen={deleteConfirm.isOpen}
                 title="Delete Category"
                 message={`Are you sure you want to delete "${deleteConfirm.category?.name}"?${deleteConfirm.category?.productCount > 0
-                        ? ` This category has ${deleteConfirm.category.productCount} product(s).`
-                        : ''
+                    ? ` This category has ${deleteConfirm.category.productCount} product(s).`
+                    : ''
                     }`}
                 confirmLabel="Delete"
                 confirmVariant="danger"

@@ -84,6 +84,10 @@ export default function AdminProductsPage() {
 
     const handleToggleStatus = async (productId) => {
         try {
+            if (!productId) {
+                toast.error('Product ID missing');
+                return;
+            }
             const res = await axios.put(`/api/admin/products/${productId}/status`);
             if (res.data.success) {
                 toast.success(`Product ${res.data.data.isActive ? 'published' : 'unpublished'}`);
@@ -98,6 +102,10 @@ export default function AdminProductsPage() {
 
     const handleUpdateStock = async (productId, newStock) => {
         try {
+            if (!productId) {
+                toast.error('Product ID missing');
+                return;
+            }
             const res = await axios.put(`/api/admin/products/${productId}/stock`, {
                 stock: newStock,
             });
@@ -114,6 +122,10 @@ export default function AdminProductsPage() {
 
     const handleToggleFeatured = async (productId) => {
         try {
+            if (!productId) {
+                toast.error('Product ID missing');
+                return;
+            }
             const res = await axios.put(`/api/admin/products/${productId}/featured`);
             if (res.data.success) {
                 toast.success(`Product ${res.data.data.isFeatured ? 'featured' : 'unfeatured'}`);
@@ -128,6 +140,10 @@ export default function AdminProductsPage() {
 
     const handleDelete = async (productId) => {
         try {
+            if (!productId) {
+                toast.error('Product ID missing');
+                return;
+            }
             setActionLoading(true);
             const res = await axios.delete(`/api/admin/products/${productId}`);
             if (res.data.success) {

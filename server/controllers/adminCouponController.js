@@ -221,9 +221,7 @@ exports.toggleCouponStatus = async (req, res) => {
 
         res.status(200).json({
             success: true,
-            data: {
-                isActive: coupon.isActive,
-            },
+            data: coupon,
         });
     } catch (error) {
         res.status(500).json({

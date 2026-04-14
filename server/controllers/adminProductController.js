@@ -355,11 +355,12 @@ exports.toggleProductStatus = async (req, res) => {
         product.isActive = !product.isActive;
         await product.save();
 
+        // Populate category and return full product
+        await product.populate('category', 'name slug');
+
         res.status(200).json({
             success: true,
-            data: {
-                isActive: product.isActive,
-            },
+            data: product,
         });
     } catch (error) {
         res.status(500).json({
@@ -387,11 +388,12 @@ exports.toggleFeatured = async (req, res) => {
         product.isFeatured = !product.isFeatured;
         await product.save();
 
+        // Populate category and return full product
+        await product.populate('category', 'name slug');
+
         res.status(200).json({
             success: true,
-            data: {
-                isFeatured: product.isFeatured,
-            },
+            data: product,
         });
     } catch (error) {
         res.status(500).json({
