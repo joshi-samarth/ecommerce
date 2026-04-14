@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { Loader } from 'lucide-react';
 
 export default function ConfirmDialog({
     isOpen,
@@ -9,6 +10,7 @@ export default function ConfirmDialog({
     confirmVariant = 'warning',
     onConfirm,
     onCancel,
+    loading = false,
 }) {
     useEffect(() => {
         const handleEscape = (e) => {
@@ -50,11 +52,17 @@ export default function ConfirmDialog({
                 <div className="flex gap-3 justify-end">
                     <button
                         onClick={onCancel}
-                        className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded hover:bg-gray-200 transition"
+                        disabled={loading}
+                        className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded hover:bg-gray-200 transition disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         {cancelLabel}
                     </button>
-                    <button onClick={onConfirm} className={`px-4 py-2 text-sm font-medium rounded transition ${confirmButtonClass}`}>
+                    <button
+                        onClick={onConfirm}
+                        disabled={loading}
+                        className={`px-4 py-2 text-sm font-medium rounded transition flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed ${confirmButtonClass}`}
+                    >
+                        {loading && <Loader size={16} className="animate-spin" />}
                         {confirmLabel}
                     </button>
                 </div>

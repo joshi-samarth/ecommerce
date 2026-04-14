@@ -165,6 +165,7 @@ export default function AdminCategoriesPage() {
                 confirmVariant="danger"
                 onConfirm={handleDeleteConfirm}
                 onCancel={() => setDeleteConfirm({ isOpen: false, category: null })}
+                loading={formLoading}
             />
         </div>
     );
