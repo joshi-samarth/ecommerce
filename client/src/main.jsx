@@ -15,6 +15,10 @@ import HomePage from './pages/HomePage';
 import AdminLayout from './layouts/AdminLayout';
 import AdminDashboardPage from './pages/admin/AdminDashboardPage';
 import AdminUsersPage from './pages/admin/AdminUsersPage';
+import AdminProductsPage from './pages/admin/AdminProductsPage';
+import AdminProductFormPage from './pages/admin/AdminProductFormPage';
+import AdminCategoriesPage from './pages/admin/AdminCategoriesPage';
+import AdminCouponsPage from './pages/admin/AdminCouponsPage';
 import UserLayout from './layouts/UserLayout';
 import AccountPage from './pages/user/AccountPage';
 import ProfileTab from './pages/user/ProfileTab';
@@ -59,6 +63,11 @@ function App() {
                     <Route path="/admin" element={<AdminLayout />}>
                         <Route index element={<AdminDashboardPage />} />
                         <Route path="users" element={<AdminUsersPage />} />
+                        <Route path="products" element={<AdminProductsPage />} />
+                        <Route path="products/new" element={<AdminProductFormPage />} />
+                        <Route path="products/:id/edit" element={<AdminProductFormPage />} />
+                        <Route path="categories" element={<AdminCategoriesPage />} />
+                        <Route path="coupons" element={<AdminCouponsPage />} />
                     </Route>
                 </Route>
 

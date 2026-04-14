@@ -14,7 +14,9 @@ const Sidebar = () => {
 
     const navItems = [
         { label: 'Dashboard', path: '/admin', icon: '📊' },
-        { label: 'Products', path: '/admin/products', icon: '📦', disabled: true },
+        { label: 'Products', path: '/admin/products', icon: '📦' },
+        { label: 'Categories', path: '/admin/categories', icon: '📂' },
+        { label: 'Coupons', path: '/admin/coupons', icon: '🎟️' },
         { label: 'Orders', path: '/admin/orders', icon: '🛒', disabled: true },
         { label: 'Users', path: '/admin/users', icon: '👥' },
     ];
