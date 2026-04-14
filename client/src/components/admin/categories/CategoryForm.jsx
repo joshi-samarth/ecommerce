@@ -61,7 +61,7 @@ export default function CategoryForm({ category, onSubmit, loading, onCancel }) 
             description: formData.description,
             isActive: formData.isActive,
             image: formData.image,
-            imagePreview: formData.imagePreview,
+            // Do NOT send imagePreview to backend
         };
 
         onSubmit(submitData);

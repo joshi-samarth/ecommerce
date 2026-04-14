@@ -52,7 +52,7 @@ export default function CategoryTable({ categories, loading, onEdit, onDelete })
                         <Edit size={18} />
                     </button>
                     <button
-                        onClick={() => onDelete(row._id, row.productCount)}
+                        onClick={() => onDelete(row)}
                         className="p-2 hover:bg-red-100 text-red-600 rounded transition"
                         title="Delete"
                     >

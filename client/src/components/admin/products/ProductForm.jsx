@@ -134,13 +134,21 @@ export default function ProductForm({ product, onSubmit, loading }) {
         if (!formData.stock) return;
 
         const submitData = {
-            ...formData,
+            name: formData.name,
+            description: formData.description,
             price: parseFloat(formData.price),
             comparePrice: formData.comparePrice ? parseFloat(formData.comparePrice) : null,
-            stock: parseInt(formData.stock),
+            category: formData.category,
+            slug: formData.slug || generateSlug(formData.name),
             tags: formData.tags,
-            images: imageData.existingImages,
-            newFiles: imageData.newFiles,
+            stock: parseInt(formData.stock),
+            isFeatured: formData.isFeatured,
+            isActive: formData.isActive,
+            // Send images data in the correct structure
+            images: {
+                existingImages: imageData.existingImages,
+                newFiles: imageData.newFiles,
+            },
         };
 
         onSubmit(submitData);
