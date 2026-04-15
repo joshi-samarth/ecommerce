@@ -19,6 +19,8 @@ import AdminProductsPage from './pages/admin/AdminProductsPage';
 import AdminProductFormPage from './pages/admin/AdminProductFormPage';
 import AdminCategoriesPage from './pages/admin/AdminCategoriesPage';
 import AdminCouponsPage from './pages/admin/AdminCouponsPage';
+import AdminOrdersPage from './pages/admin/orders/AdminOrdersPage';
+import AdminOrderDetailPage from './pages/admin/orders/AdminOrderDetailPage';
 import UserLayout from './layouts/UserLayout';
 import AccountPage from './pages/user/AccountPage';
 import ProfileTab from './pages/user/ProfileTab';
@@ -28,6 +30,9 @@ import SecurityTab from './pages/user/SecurityTab';
 import ProductsPage from './pages/shop/ProductsPage';
 import ProductDetailPage from './pages/shop/ProductDetailPage';
 import WishlistPage from './pages/shop/WishlistPage';
+import CheckoutPage from './pages/shop/CheckoutPage';
+import OrderSuccessPage from './pages/shop/OrderSuccessPage';
+import OrderDetailPage from './pages/shop/OrderDetailPage';
 import './index.css';
 
 function App() {
@@ -47,6 +52,11 @@ function App() {
                     <Route path="/products" element={<ProductsPage />} />
                     <Route path="/products/:slug" element={<ProductDetailPage />} />
                     <Route path="/wishlist" element={<WishlistPage />} />
+
+                    {/* Checkout Routes */}
+                    <Route path="/checkout" element={<CheckoutPage />} />
+                    <Route path="/order-success/:orderId" element={<OrderSuccessPage />} />
+                    <Route path="/account/orders/:orderId" element={<OrderDetailPage />} />
 
                     {/* User Account Routes */}
                     <Route path="/account" element={<UserLayout />}>
@@ -68,6 +78,8 @@ function App() {
                         <Route path="products/:id/edit" element={<AdminProductFormPage />} />
                         <Route path="categories" element={<AdminCategoriesPage />} />
                         <Route path="coupons" element={<AdminCouponsPage />} />
+                        <Route path="orders" element={<AdminOrdersPage />} />
+                        <Route path="orders/:id" element={<AdminOrderDetailPage />} />
                     </Route>
                 </Route>
 
