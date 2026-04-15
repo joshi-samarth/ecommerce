@@ -30,7 +30,7 @@ const getDashboardStats = async (req, res, next) => {
                 Order.countDocuments(),
                 Order.aggregate([
                     { $match: { paymentStatus: 'paid' } },
-                    { $group: { _id: null, total: { $sum: '$totalAmount' } } },
+                    { $group: { _id: null, total: { $sum: '$total' } } },
                 ]),
             ]);
             totalOrders = orderCount;
