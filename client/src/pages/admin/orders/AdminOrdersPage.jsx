@@ -235,8 +235,8 @@ const AdminOrdersPage = () => {
                     key={page}
                     onClick={() => handleFilterChange('page', page)}
                     className={`px-3 py-2 rounded-lg ${pagination.page === page
-                        ? 'bg-blue-600 text-white'
-                        : 'border border-gray-300 hover:bg-gray-50'
+                      ? 'bg-blue-600 text-white'
+                      : 'border border-gray-300 hover:bg-gray-50'
                       }`}
                   >
                     {page}

@@ -81,45 +81,45 @@ const CheckoutPage = () => {
           {/* Steps */}
           <CheckoutSteps currentStep={currentStep} />
 
-        {/* Content */}
-        <div className="bg-white rounded-lg p-6 sm:p-8 mt-8">
-          {currentStep === 1 && (
-            <>
-              <h2 className="text-2xl font-bold mb-6">Select Delivery Address</h2>
-              <AddressStep
-                selectedAddress={selectedAddress}
-                onSelect={setSelectedAddress}
-                onContinue={handleContinueAddress}
-              />
-              <div className="mt-8 flex gap-4">
-                <button
-                  onClick={() => navigate('/cart')}
-                  className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium"
-                >
-                  Back to Cart
-                </button>
-                <button
-                  onClick={handleContinueAddress}
-                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium"
-                >
-                  Continue to Review
-                </button>
-              </div>
-            </>
-          )}
+          {/* Content */}
+          <div className="bg-white rounded-lg p-6 sm:p-8 mt-8">
+            {currentStep === 1 && (
+              <>
+                <h2 className="text-2xl font-bold mb-6">Select Delivery Address</h2>
+                <AddressStep
+                  selectedAddress={selectedAddress}
+                  onSelect={setSelectedAddress}
+                  onContinue={handleContinueAddress}
+                />
+                <div className="mt-8 flex gap-4">
+                  <button
+                    onClick={() => navigate('/cart')}
+                    className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium"
+                  >
+                    Back to Cart
+                  </button>
+                  <button
+                    onClick={handleContinueAddress}
+                    className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium"
+                  >
+                    Continue to Review
+                  </button>
+                </div>
+              </>
+            )}
 
-          {currentStep === 2 && selectedAddress && (
-            <>
-              <h2 className="text-2xl font-bold mb-6">Review Your Order</h2>
-              <ReviewStep
-                address={selectedAddress}
-                onBack={() => setCurrentStep(1)}
-                onPlaceOrder={handlePlaceOrder}
-                loading={loading}
-              />
-            </>
-          )}
-        </div>
+            {currentStep === 2 && selectedAddress && (
+              <>
+                <h2 className="text-2xl font-bold mb-6">Review Your Order</h2>
+                <ReviewStep
+                  address={selectedAddress}
+                  onBack={() => setCurrentStep(1)}
+                  onPlaceOrder={handlePlaceOrder}
+                  loading={loading}
+                />
+              </>
+            )}
+          </div>
         </div>
       </div>
     </div>

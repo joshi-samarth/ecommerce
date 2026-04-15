@@ -41,7 +41,7 @@ mongoose
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/admin', adminProductRoutes);
-app.use('/api/admin', adminOrderRoutes);
+app.use('/api/admin/orders', adminOrderRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);

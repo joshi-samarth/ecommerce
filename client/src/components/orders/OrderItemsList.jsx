@@ -21,7 +21,7 @@ const OrderItemsList = ({ items }) => {
             const productImage = item.image || item.product?.images?.[0] || 'https://via.placeholder.com/60'
             const productSlug = item.product?.slug
             const itemPrice = item.price
-            
+
             return (
               <tr key={index} className="border-b hover:bg-gray-50">
                 <td className="py-3 px-2">
