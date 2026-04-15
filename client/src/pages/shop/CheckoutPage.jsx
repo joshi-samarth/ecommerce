@@ -5,6 +5,8 @@ import { CartContext } from '../../context/CartContext'
 import CheckoutSteps from '../../components/checkout/CheckoutSteps'
 import AddressStep from '../../components/checkout/AddressStep'
 import ReviewStep from '../../components/checkout/ReviewStep'
+import Navbar from '../../components/shared/Navbar'
+import { ChevronLeft } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 const CheckoutPage = () => {
@@ -57,16 +59,27 @@ const CheckoutPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-6">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Checkout</h1>
-          <p className="text-gray-600 mt-2">{cart.items.length} items in your order</p>
-        </div>
+    <div className="min-h-screen bg-gray-50">
+      <Navbar />
+      <div className="py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Back Button */}
+          <button
+            onClick={() => navigate('/cart')}
+            className="flex items-center gap-2 text-blue-600 hover:text-blue-700 mb-6 font-medium"
+          >
+            <ChevronLeft className="w-5 h-5" />
+            Back to Cart
+          </button>
 
-        {/* Steps */}
-        <CheckoutSteps currentStep={currentStep} />
+          {/* Header */}
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-gray-900">Checkout</h1>
+            <p className="text-gray-600 mt-2">{cart.items.length} items in your order</p>
+          </div>
+
+          {/* Steps */}
+          <CheckoutSteps currentStep={currentStep} />
 
         {/* Content */}
         <div className="bg-white rounded-lg p-6 sm:p-8 mt-8">
@@ -106,6 +119,7 @@ const CheckoutPage = () => {
               />
             </>
           )}
+        </div>
         </div>
       </div>
     </div>

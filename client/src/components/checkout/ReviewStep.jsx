@@ -135,6 +135,13 @@ const ReviewStep = ({ address, onBack, onPlaceOrder, loading }) => {
           >
             {loading ? 'Placing Order...' : 'Place Order'}
           </button>
+
+          <button
+            onClick={onBack}
+            className="w-full mt-3 border border-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+          >
+            Back to Address
+          </button>
         </div>
       </div>
     </div>

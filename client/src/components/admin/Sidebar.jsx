@@ -90,7 +90,7 @@ const Sidebar = () => {
                         className="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg font-medium transition flex items-center justify-center gap-2"
                     >
                         <span>🚪</span>
-                        Logout
+                        Logout 
                     </button>
                 </div>
             </aside>

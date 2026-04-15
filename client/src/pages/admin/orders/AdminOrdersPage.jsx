@@ -34,9 +34,12 @@ const AdminOrdersPage = () => {
       if (response.data.success) {
         setOrders(response.data.data)
         setPagination(response.data.pagination)
+      } else {
+        toast.error(response.data.message || 'Failed to fetch orders')
       }
     } catch (error) {
-      toast.error('Failed to fetch orders')
+      console.error('Fetch orders error:', error.response?.data || error.message)
+      toast.error(error.response?.data?.message || 'Failed to fetch orders')
     } finally {
       setLoading(false)
     }
@@ -49,7 +52,7 @@ const AdminOrdersPage = () => {
         setStats(response.data.data)
       }
     } catch (error) {
-      console.error('Failed to fetch stats:', error)
+      console.error('Failed to fetch stats:', error.response?.data || error.message)
     }
   }
 
