@@ -33,6 +33,44 @@ export const AuthProvider = ({ children }) => {
         restoreSession();
     }, []);
 
+    // ========== USER REGISTRATION WITH OTP ==========
+    const sendRegistrationOTP = async (email) => {
+        try {
+            const response = await api.post('/api/auth/register/send-otp', { email });
+            if (response.data.success) {
+                return {
+                    success: true,
+                    message: response.data.message,
+                    email: response.data.data.email
+                };
+            }
+        } catch (error) {
+            const message =
+                error.response?.data?.message || 'Failed to send OTP. Please try again.';
+            return { success: false, message };
+        }
+    };
+
+    const verifyRegistrationOTP = async (email, otp, name, password) => {
+        try {
+            const response = await api.post('/api/auth/register/verify-otp', {
+                email,
+                otp,
+                name,
+                password,
+            });
+            if (response.data.success) {
+                setUser(response.data.data);
+                return { success: true, data: response.data.data };
+            }
+        } catch (error) {
+            const message =
+                error.response?.data?.message || 'OTP verification failed. Please try again.';
+            return { success: false, message };
+        }
+    };
+
+    // ========== USER LOGIN ==========
     const login = async (email, password) => {
         try {
             const response = await api.post('/api/auth/login', { email, password });
@@ -47,6 +85,57 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    // ========== ADMIN LOGIN WITH OTP ==========
+    const adminLoginSendOTP = async (email, password) => {
+        try {
+            const response = await api.post('/api/auth/admin/login', { email, password });
+            if (response.data.success) {
+                return {
+                    success: true,
+                    message: response.data.message,
+                    email: response.data.data.email,
+                    otpExpiry: response.data.data.otpExpiry
+                };
+            }
+        } catch (error) {
+            const message =
+                error.response?.data?.message || 'Admin login failed. Please try again.';
+            return { success: false, message };
+        }
+    };
+
+    const adminLoginVerifyOTP = async (email, otp) => {
+        try {
+            const response = await api.post('/api/auth/admin/verify-otp', { email, otp });
+            if (response.data.success) {
+                setUser(response.data.data);
+                return { success: true, data: response.data.data };
+            }
+        } catch (error) {
+            const message =
+                error.response?.data?.message || 'OTP verification failed. Please try again.';
+            return { success: false, message };
+        }
+    };
+
+    // ========== RESEND OTP ==========
+    const resendOTP = async (email, type) => {
+        try {
+            const response = await api.post('/api/auth/resend-otp', { email, type });
+            if (response.data.success) {
+                return {
+                    success: true,
+                    message: response.data.message
+                };
+            }
+        } catch (error) {
+            const message =
+                error.response?.data?.message || 'Failed to resend OTP. Please try again.';
+            return { success: false, message };
+        }
+    };
+
+    // ========== OLD METHODS (KEPT FOR BACKWARD COMPATIBILITY) ==========
     const register = async (name, email, password) => {
         try {
             const response = await api.post('/api/auth/register', {
@@ -78,10 +167,21 @@ export const AuthProvider = ({ children }) => {
     const value = {
         user,
         loading,
+        // User Registration with OTP
+        sendRegistrationOTP,
+        verifyRegistrationOTP,
+        // User Login
         login,
+        // Admin Login with OTP
+        adminLoginSendOTP,
+        adminLoginVerifyOTP,
+        // Resend OTP
+        resendOTP,
+        // Old methods
         register,
         logout,
     };
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
+

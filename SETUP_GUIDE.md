@@ -81,16 +81,24 @@ Each login page has a "Demo Credentials" button to auto-fill the credentials for
 - ✅ Modern gradient backgrounds
 - ✅ Improved form styling
 - ✅ Error/success notifications
-- ✅ Demo credential buttons for easy testing
+- ✅ 2-step registration flow with OTP verification
+- ✅ OTP countdown timer (10 minutes)
+- ✅ Resend OTP functionality
 
 ### 🔐 Authentication
-- ✅ User registration & login
-- ✅ Admin-only login
-- ✅ Password validation (min 6 characters)
+- ✅ **User Registration with OTP verification** (2-step)
+  - Step 1: Enter email → Receive OTP
+  - Step 2: Enter OTP + Name + Password → Complete registration
+- ✅ User login (email + password)
+- ✅ **Admin Login with 2FA (OTP verification)**
+  - Step 1: Enter credentials → Receive OTP
+  - Step 2: Enter OTP → Complete login
+- ✅ Password validation (min 8 characters for registration, alphanumeric + special chars)
 - ✅ Password confirmation matching
 - ✅ httpOnly cookie-based sessions
 - ✅ JWT token management
 - ✅ Protected routes (PrivateRoute, AdminRoute)
+- ✅ Asynchronous email sending (instant API response)
 
 ### 📊 Route Structure
 | Route | Purpose |
@@ -105,11 +113,46 @@ Each login page has a "Demo Credentials" button to auto-fill the credentials for
 
 ## 🧪 Testing Workflow
 
+### User Registration (New OTP Flow)
 1. **Start both servers** (backend & frontend)
-2. **Seed demo users:** `curl -X POST http://localhost:5000/api/auth/seed`
-3. **Visit frontend:** http://localhost:5173
-4. **Click "Demo User/Admin Credentials"** to auto-fill login forms
-5. **Login and test navigation**
+2. **Visit frontend:** http://localhost:5173/register
+3. **Step 1:** Enter your email → Click "Send Verification Code"
+   - ✅ OTP sent instantly to email
+   - ✅ Screen automatically shows OTP entry page
+4. **Step 2:** 
+   - Enter 6-digit OTP from your email
+   - Enter Full Name
+   - Enter Password (min 8 characters)
+   - Enter Confirm Password
+   - Click "Create Account"
+5. **Success!** Auto-redirected to home page ✨
+
+### User Login
+1. **Visit:** http://localhost:5173/login
+2. **Enter credentials:**
+   - Email: `user@example.com`
+   - Password: `password123`
+3. **Login & redirected to home page**
+
+### Admin Login (2FA - OTP Verification)
+1. **Visit:** http://localhost:5173/admin-login
+2. **Step 1:** Enter credentials
+   - Email: `admin@example.com`
+   - Password: `admin123`
+   - Click "Send Verification Code"
+   - ✅ OTP sent instantly to email
+3. **Step 2:**
+   - Enter 6-digit OTP from your email
+   - Click "Verify & Login"
+4. **Success!** Auto-redirected to admin dashboard ✨
+
+### Seed Demo Users
+```bash
+curl -X POST http://localhost:5000/api/auth/seed
+```
+This creates:
+- **Admin:** email: `admin@example.com` | password: `admin123` (role: `admin`)
+- **User:** email: `user@example.com` | password: `password123` (role: `user`)
 
 ---
 
