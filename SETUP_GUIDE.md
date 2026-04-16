@@ -70,7 +70,15 @@ After running the seed endpoint, you can login with:
 
 ### Demo Credentials Buttons
 Each login page has a "Demo Credentials" button to auto-fill the credentials for testing.
+### 🔑 Password Requirements
+**Registration & Password Changes require strong passwords:**
+- Minimum 8 characters
+- At least 1 uppercase letter (A-Z)
+- At least 1 lowercase letter (a-z)
+- At least 1 number (0-9)
+- At least 1 special character (@$!%*?&)
 
+Example strong password: `SecurePass123!`
 ---
 
 ## ✅ Features

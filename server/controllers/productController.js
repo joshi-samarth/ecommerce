@@ -137,12 +137,21 @@ exports.getProductBySlug = async (req, res) => {
     try {
         const { slug } = req.params;
 
-        const product = await Product.findOne({ slug, isActive: true })
+        // Try to find product by slug (don't strictly require isActive - show details if accessible)
+        const product = await Product.findOne({ slug: slug.toLowerCase() })
             .populate('category', 'name slug')
             .populate('ratings.user', 'name');
 
         if (!product) {
-            return res.status(404).json({ success: false, message: 'Product not found' });
+            return res.status(404).json({ 
+                success: false, 
+                message: 'Product not found. Please check the product URL.' 
+            });
+        }
+
+        // Warn if product is not active but still serve (optional)
+        if (!product.isActive) {
+            console.warn(`Warning: Accessing inactive product - slug: ${slug}`);
         }
 
         res.status(200).json({
@@ -272,6 +281,64 @@ exports.deleteReview = async (req, res) => {
             success: true,
             message: 'Review deleted successfully',
             data: product,
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// @desc    Fix products without slugs or set isActive to true (MAINTENANCE ENDPOINT)
+// @route   POST /api/products/admin-only/fix-missing-data
+// @access  Private/Admin
+exports.fixMissingProductData = async (req, res) => {
+    try {
+        const products = await Product.find({});
+        let updated = 0;
+
+        for (const product of products) {
+            let needsUpdate = false;
+
+            // Generate slug if missing
+            if (!product.slug || product.slug.trim() === '') {
+                let slug = (product.name || 'product')
+                    .toLowerCase()
+                    .trim()
+                    .replace(/[^\w\s-]/g, '')
+                    .replace(/\s+/g, '-');
+
+                let count = 0;
+                let finalSlug = slug;
+                let existingProduct = await Product.findOne({ slug: finalSlug, _id: { $ne: product._id } });
+
+                while (existingProduct) {
+                    count++;
+                    finalSlug = `${slug}-${count}`;
+                    existingProduct = await Product.findOne({ slug: finalSlug, _id: { $ne: product._id } });
+                }
+
+                product.slug = finalSlug;
+                needsUpdate = true;
+            }
+
+            // Ensure isActive is set
+            if (product.isActive === undefined || product.isActive === null) {
+                product.isActive = true;
+                needsUpdate = true;
+            }
+
+            if (needsUpdate) {
+                await product.save();
+                updated++;
+            }
+        }
+
+        res.status(200).json({
+            success: true,
+            message: `Fixed ${updated} products with missing data`,
+            data: {
+                totalProducts: products.length,
+                productsUpdated: updated,
+            },
         });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });

@@ -9,14 +9,11 @@ const generateOTP = () => {
 // Send OTP via email
 const sendOTPEmail = async (email, otp, purpose) => {
   try {
-    const subject =
-      purpose === 'user_registration'
-        ? 'Email Verification - Register on ShopHub'
-        : 'Admin Login Verification - ShopHub'
+    let subject, message
 
-    const message =
-      purpose === 'user_registration'
-        ? `
+    if (purpose === 'user_registration') {
+      subject = 'Email Verification - Register on ShopHub'
+      message = `
         <h2>Verify Your Email</h2>
         <p>Welcome to ShopHub! Please verify your email to complete your registration.</p>
         <h3 style="color: #0066cc; font-size: 32px; letter-spacing: 4px; margin: 20px 0;">${otp}</h3>
@@ -25,7 +22,20 @@ const sendOTPEmail = async (email, otp, purpose) => {
         <hr/>
         <p style="color: #666; font-size: 12px;">Never share your OTP with anyone. ShopHub support will never ask for your OTP.</p>
         `
-        : `
+    } else if (purpose === 'admin_creation') {
+      subject = 'Admin Account Creation Verification - ShopHub'
+      message = `
+        <h2>Admin Account Creation Verification</h2>
+        <p>A new admin account is being created. Please verify this action using the OTP below.</p>
+        <h3 style="color: #0066cc; font-size: 32px; letter-spacing: 4px; margin: 20px 0;">${otp}</h3>
+        <p><strong>This OTP is valid for 10 minutes only.</strong></p>
+        <p>If you did not request this, please contact your administrator immediately.</p>
+        <hr/>
+        <p style="color: #666; font-size: 12px;">Never share your OTP with anyone.</p>
+        `
+    } else {
+      subject = 'Admin Login Verification - ShopHub'
+      message = `
         <h2>Admin Login Verification</h2>
         <p>You've initiated an admin login. Please verify this action using the OTP below.</p>
         <h3 style="color: #0066cc; font-size: 32px; letter-spacing: 4px; margin: 20px 0;">${otp}</h3>
@@ -34,6 +44,7 @@ const sendOTPEmail = async (email, otp, purpose) => {
         <hr/>
         <p style="color: #666; font-size: 12px;">Never share your OTP with anyone.</p>
         `
+    }
 
     const html = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">

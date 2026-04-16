@@ -34,9 +34,13 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     // ========== USER REGISTRATION WITH OTP ==========
-    const sendRegistrationOTP = async (email) => {
+    const registerUserWithOTP = async (email, name, password) => {
         try {
-            const response = await api.post('/api/auth/register/send-otp', { email });
+            const response = await api.post('/api/auth/register/send-otp', {
+                email,
+                name,
+                password,
+            });
             if (response.data.success) {
                 return {
                     success: true,
@@ -51,13 +55,11 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    const verifyRegistrationOTP = async (email, otp, name, password) => {
+    const verifyRegistrationOTP = async (email, otp) => {
         try {
             const response = await api.post('/api/auth/register/verify-otp', {
                 email,
                 otp,
-                name,
-                password,
             });
             if (response.data.success) {
                 setUser(response.data.data);
@@ -135,6 +137,44 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    // ========== ADMIN CREATION WITH OTP ==========
+    const createAdminWithOTP = async (name, email, password) => {
+        try {
+            const response = await api.post('/api/admin/create-admin/send-otp', {
+                name,
+                email,
+                password,
+            });
+            if (response.data.success) {
+                return {
+                    success: true,
+                    message: response.data.message,
+                    email: response.data.data.email
+                };
+            }
+        } catch (error) {
+            const message =
+                error.response?.data?.message || 'Failed to send OTP. Please try again.';
+            return { success: false, message };
+        }
+    };
+
+    const verifyAdminCreationOTP = async (email, otp) => {
+        try {
+            const response = await api.post('/api/admin/create-admin/verify-otp', {
+                email,
+                otp,
+            });
+            if (response.data.success) {
+                return { success: true, data: response.data.data };
+            }
+        } catch (error) {
+            const message =
+                error.response?.data?.message || 'OTP verification failed. Please try again.';
+            return { success: false, message };
+        }
+    };
+
     // ========== OLD METHODS (KEPT FOR BACKWARD COMPATIBILITY) ==========
     const register = async (name, email, password) => {
         try {
@@ -168,13 +208,16 @@ export const AuthProvider = ({ children }) => {
         user,
         loading,
         // User Registration with OTP
-        sendRegistrationOTP,
+        registerUserWithOTP,
         verifyRegistrationOTP,
         // User Login
         login,
         // Admin Login with OTP
         adminLoginSendOTP,
         adminLoginVerifyOTP,
+        // Admin Creation with OTP
+        createAdminWithOTP,
+        verifyAdminCreationOTP,
         // Resend OTP
         resendOTP,
         // Old methods

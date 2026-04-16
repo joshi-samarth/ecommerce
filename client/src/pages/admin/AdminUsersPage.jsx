@@ -8,6 +8,9 @@ const AdminUsersPage = () => {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [showCreateAdmin, setShowCreateAdmin] = useState(false);
+    const [adminCreationStep, setAdminCreationStep] = useState(1); // Step 1: Form, Step 2: OTP
+    const [otpTimer, setOtpTimer] = useState(0);
+    const [canResendAdminOTP, setCanResendAdminOTP] = useState(false);
     const { user: currentAdmin } = useAuth();
 
     // Create admin form state
@@ -15,8 +18,26 @@ const AdminUsersPage = () => {
         name: '',
         email: '',
         password: '',
-        secretKey: '',
+        confirmPassword: '',
     });
+    const [adminOtp, setAdminOtp] = useState('');
+
+    // OTP Timer for admin creation
+    useEffect(() => {
+        let interval;
+        if (adminCreationStep === 2 && otpTimer > 0) {
+            interval = setInterval(() => {
+                setOtpTimer((prev) => {
+                    if (prev <= 1) {
+                        setCanResendAdminOTP(true);
+                        return 0;
+                    }
+                    return prev - 1;
+                });
+            }, 1000);
+        }
+        return () => clearInterval(interval);
+    }, [adminCreationStep, otpTimer]);
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -34,6 +55,11 @@ const AdminUsersPage = () => {
 
         fetchUsers();
     }, []);
+
+    // Validate password strength
+    const isPasswordStrong = (pwd) => {
+        return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(pwd);
+    };
 
     const handleToggleRole = async (userId, currentRole) => {
         const newRole = currentRole === 'admin' ? 'user' : 'admin';
@@ -66,38 +92,99 @@ const AdminUsersPage = () => {
         }));
     };
 
-    const handleCreateAdmin = async (e) => {
+    // ===== STEP 1: SUBMIT ADMIN FORM & SEND OTP =====
+    const handleCreateAdminStep1 = async (e) => {
         e.preventDefault();
         setError('');
 
-        if (!formData.name || !formData.email || !formData.password || !formData.secretKey) {
+        if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword) {
             setError('All fields are required');
             return;
         }
 
+        if (!isPasswordStrong(formData.password)) {
+            setError('Password must be min 8 characters with uppercase, lowercase, numbers & special chars (@$!%*?&)');
+            return;
+        }
+
+        if (formData.password !== formData.confirmPassword) {
+            setError('Passwords do not match');
+            return;
+        }
+
         try {
-            const response = await api.post('/api/admin/create-admin', {
+            const response = await api.post('/api/admin/create-admin/send-otp', {
                 name: formData.name,
                 email: formData.email,
                 password: formData.password,
-                secretKey: formData.secretKey,
+            });
+
+            if (response.data.success) {
+                setSuccess(response.data.message);
+                setAdminCreationStep(2);
+                setOtpTimer(600); // 10 minutes
+                setCanResendAdminOTP(false);
+                setTimeout(() => setSuccess(''), 3000);
+            }
+        } catch (err) {
+            setError(err.response?.data?.message || 'Failed to send OTP');
+        }
+    };
+
+    // ===== STEP 2: VERIFY OTP & CREATE ADMIN =====
+    const handleCreateAdminStep2 = async (e) => {
+        e.preventDefault();
+        setError('');
+
+        if (!adminOtp.trim()) {
+            setError('Please enter OTP');
+            return;
+        }
+
+        try {
+            const response = await api.post('/api/admin/create-admin/verify-otp', {
+                email: formData.email,
+                otp: adminOtp,
             });
 
             if (response.data.success) {
                 setUsers([...users, response.data.data]);
-                setSuccess(response.data.message);
+                setSuccess('✅ ' + response.data.message);
                 setFormData({
                     name: '',
                     email: '',
                     password: '',
-                    secretKey: '',
+                    confirmPassword: '',
                 });
+                setAdminOtp('');
+                setAdminCreationStep(1);
                 setShowCreateAdmin(false);
                 setTimeout(() => setSuccess(''), 3000);
             }
         } catch (err) {
             setError(err.response?.data?.message || 'Failed to create admin');
-            setTimeout(() => setError(''), 3000);
+        }
+    };
+
+    // ===== RESEND OTP =====
+    const handleResendAdminOTP = async () => {
+        setError('');
+        setCanResendAdminOTP(false);
+
+        try {
+            const response = await api.post('/api/auth/resend-otp', {
+                email: formData.email,
+                type: 'admin-creation',
+            });
+
+            if (response.data.success) {
+                setSuccess('✅ OTP resent! Check your email');
+                setOtpTimer(600);
+                setTimeout(() => setSuccess(''), 3000);
+            }
+        } catch (err) {
+            setError(err.response?.data?.message || 'Failed to resend OTP');
+            setCanResendAdminOTP(true);
         }
     };
 
@@ -128,7 +215,18 @@ const AdminUsersPage = () => {
                     <p className="text-gray-600 text-sm mt-1">Total users: {users.length}</p>
                 </div>
                 <button
-                    onClick={() => setShowCreateAdmin(!showCreateAdmin)}
+                    onClick={() => {
+                        setShowCreateAdmin(!showCreateAdmin);
+                        setAdminCreationStep(1);
+                        setFormData({
+                            name: '',
+                            email: '',
+                            password: '',
+                            confirmPassword: '',
+                        });
+                        setAdminOtp('');
+                        setError('');
+                    }}
                     className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition"
                 >
                     {showCreateAdmin ? '❌ Cancel' : '➕ Add Admin'}
@@ -150,11 +248,12 @@ const AdminUsersPage = () => {
                 </div>
             )}
 
-            {/* Create Admin Form */}
-            {showCreateAdmin && (
+            {/* Create Admin Form - Step 1 */}
+            {showCreateAdmin && adminCreationStep === 1 && (
                 <div className="bg-white rounded-lg shadow-md p-6 border border-green-200">
                     <h3 className="text-lg font-bold text-gray-800 mb-4">Create New Admin Account</h3>
-                    <form onSubmit={handleCreateAdmin} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <p className="text-gray-600 text-sm mb-4">Fill all details and we'll send verification code to the email</p>
+                    <form onSubmit={handleCreateAdminStep1} className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label className="block text-sm font-semibold text-gray-700 mb-2">Full Name</label>
                             <input
@@ -192,18 +291,19 @@ const AdminUsersPage = () => {
                                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
                                 placeholder="••••••••"
                             />
+                            <p className="text-xs text-gray-500 mt-1">Min 8 chars • Uppercase • Lowercase • Numbers • Special (@$!%*?&)</p>
                         </div>
 
                         <div>
-                            <label className="block text-sm font-semibold text-gray-700 mb-2">Admin Secret Key 🔐</label>
+                            <label className="block text-sm font-semibold text-gray-700 mb-2">Confirm Password</label>
                             <input
                                 type="password"
-                                name="secretKey"
-                                value={formData.secretKey}
+                                name="confirmPassword"
+                                value={formData.confirmPassword}
                                 onChange={handleCreateAdminChange}
                                 required
                                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
-                                placeholder="Enter secret key"
+                                placeholder="••••••••"
                             />
                         </div>
 
@@ -211,8 +311,67 @@ const AdminUsersPage = () => {
                             type="submit"
                             className="md:col-span-2 bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg font-medium transition"
                         >
-                            Create Admin Account
+                            Send Verification Code
                         </button>
+                    </form>
+                </div>
+            )}
+
+            {/* Create Admin Form - Step 2: OTP Verification */}
+            {showCreateAdmin && adminCreationStep === 2 && (
+                <div className="bg-white rounded-lg shadow-md p-6 border border-green-200">
+                    <h3 className="text-lg font-bold text-gray-800 mb-4">Verify Email for New Admin</h3>
+                    <p className="text-gray-600 text-sm mb-4">
+                        We sent a verification code to <strong>{formData.email}</strong>
+                    </p>
+                    <form onSubmit={handleCreateAdminStep2} className="space-y-4">
+                        <div>
+                            <label className="block text-sm font-semibold text-gray-700 mb-3 text-center">
+                                Enter 6-Digit Code
+                            </label>
+                            <input
+                                type="text"
+                                value={adminOtp}
+                                onChange={(e) => setAdminOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                                maxLength="6"
+                                placeholder="000000"
+                                className="w-full px-4 py-4 text-center text-2xl tracking-[0.5rem] font-bold border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition outline-none"
+                                autoFocus
+                            />
+                        </div>
+
+                        <div className="flex justify-between items-center text-xs text-gray-600 px-2">
+                            <span>
+                                OTP expires in: <strong className="text-red-600">{Math.floor(otpTimer / 60)}:{String(otpTimer % 60).padStart(2, '0')}</strong>
+                            </span>
+                            <button
+                                type="button"
+                                onClick={handleResendAdminOTP}
+                                disabled={!canResendAdminOTP}
+                                className="text-green-600 font-semibold hover:underline disabled:text-gray-400 disabled:cursor-not-allowed"
+                            >
+                                Resend
+                            </button>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-2">
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setAdminCreationStep(1);
+                                    setAdminOtp('');
+                                }}
+                                className="bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 rounded-lg font-medium transition"
+                            >
+                                ← Back
+                            </button>
+                            <button
+                                type="submit"
+                                className="bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg font-medium transition"
+                            >
+                                Verify & Create Admin
+                            </button>
+                        </div>
                     </form>
                 </div>
             )}
@@ -257,8 +416,8 @@ const AdminUsersPage = () => {
                                             <td className="px-6 py-4">
                                                 <span
                                                     className={`px-3 py-1 rounded-full text-sm font-medium ${user.role === 'admin'
-                                                            ? 'bg-purple-100 text-purple-800'
-                                                            : 'bg-gray-100 text-gray-800'
+                                                        ? 'bg-purple-100 text-purple-800'
+                                                        : 'bg-gray-100 text-gray-800'
                                                         }`}
                                                 >
                                                     {user.role === 'admin' ? '🛡️ Admin' : '👤 User'}
@@ -272,10 +431,10 @@ const AdminUsersPage = () => {
                                                     onClick={() => handleToggleRole(user._id, user.role)}
                                                     disabled={isCurrentUser}
                                                     className={`px-3 py-1 rounded text-sm font-medium transition ${isCurrentUser
-                                                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                                                            : user.role === 'admin'
-                                                                ? 'bg-blue-100 text-blue-700 hover:bg-blue-200'
-                                                                : 'bg-purple-100 text-purple-700 hover:bg-purple-200'
+                                                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                                        : user.role === 'admin'
+                                                            ? 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+                                                            : 'bg-purple-100 text-purple-700 hover:bg-purple-200'
                                                         }`}
                                                 >
                                                     {user.role === 'admin' ? 'Make User' : 'Make Admin'}

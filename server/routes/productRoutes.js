@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const protect = require('../middleware/protect');
+const isAdmin = require('../middleware/isAdmin');
 const {
     getAllProducts,
     getFeaturedProducts,
@@ -8,11 +9,15 @@ const {
     getPriceRange,
     addReview,
     deleteReview,
+    fixMissingProductData,
 } = require('../controllers/productController');
 
 // Public routes - specific routes must come before :slug
 router.get('/featured', getFeaturedProducts);
 router.get('/price-range', getPriceRange);
+
+// Admin maintenance route (must come before /:slug route)
+router.post('/admin-only/fix-missing-data', protect, isAdmin, fixMissingProductData);
 
 // Protected review routes (must come before /:slug route)
 router.post('/:slug/reviews', protect, addReview);

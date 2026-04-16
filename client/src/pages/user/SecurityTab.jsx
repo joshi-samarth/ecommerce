@@ -37,8 +37,12 @@ const SecurityTab = () => {
 
         if (!formData.newPassword) {
             newErrors.newPassword = 'New password is required';
-        } else if (formData.newPassword.length < 6) {
-            newErrors.newPassword = 'Password must be at least 6 characters';
+        } else {
+            // Use same strong password validation as registration
+            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+            if (!passwordRegex.test(formData.newPassword)) {
+                newErrors.newPassword = 'Password must be min 8 characters with uppercase, lowercase, numbers & special chars (@$!%*?&)';
+            }
         }
 
         if (!formData.confirmPassword) {

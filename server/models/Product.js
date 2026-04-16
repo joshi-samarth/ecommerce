@@ -109,10 +109,15 @@ const productSchema = new mongoose.Schema({
     },
 });
 
-// Pre-save hook to generate slug from name
+// Pre-save hook to generate slug from name (only if not already provided)
 productSchema.pre('save', async function (next) {
-    if (!this.isModified('name')) {
-        return next();
+    // Only generate slug if not already set and name was provided
+    if (this.slug) {
+        return next(); // Slug already exists, use it
+    }
+
+    if (!this.name) {
+        return next(); // No name provided
     }
 
     // Generate slug from name

@@ -3,22 +3,41 @@ const OTP = require('../models/OTP');
 const generateToken = require('../utils/generateToken');
 const { generateOTP, sendOTPEmail, verifyOTP } = require('../utils/otpUtils');
 
-// @desc    Register user - Step 1: Send OTP
+// @desc    Register user - Step 1: Validate form & Send OTP
 // @route   POST /api/auth/register/send-otp
 // @access  Public
 const sendRegistrationOTP = async (req, res) => {
     try {
-        const { email } = req.body;
+        const { email, name, password } = req.body;
 
-        if (!email) {
+        // Validation
+        if (!email || !name || !password) {
             return res.status(400).json({
                 success: false,
-                message: 'Please provide email'
+                message: 'Please provide email, name and password'
+            });
+        }
+
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Please enter a valid email address'
+            });
+        }
+
+        // Validate password strength: min 8 chars, uppercase, lowercase, numbers, special chars
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        if (!passwordRegex.test(password)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Password must be min 8 characters with uppercase, lowercase, numbers & special chars (@$!%*?&)'
             });
         }
 
         // Check if user already exists
-        const userExists = await User.findOne({ email });
+        const userExists = await User.findOne({ email: email.toLowerCase() });
         if (userExists) {
             return res.status(400).json({
                 success: false,
@@ -32,11 +51,15 @@ const sendRegistrationOTP = async (req, res) => {
         // Delete previous OTPs for this email
         await OTP.deleteMany({ email: email.toLowerCase(), purpose: 'user_registration' });
 
-        // Save OTP
+        // Save OTP with temporary user data
         await OTP.create({
             email: email.toLowerCase(),
             otp,
-            purpose: 'user_registration'
+            purpose: 'user_registration',
+            tempData: {
+                name,
+                password,
+            }
         });
 
         // Send OTP via email in background (DON'T WAIT - faster response)
@@ -62,18 +85,18 @@ const sendRegistrationOTP = async (req, res) => {
     }
 };
 
-// @desc    Register user - Step 2: Verify OTP and register
+// @desc    Register user - Step 2: Verify OTP and create account
 // @route   POST /api/auth/register/verify-otp
 // @access  Public
 const verifyRegistrationOTP = async (req, res) => {
     try {
-        const { email, otp, name, password } = req.body;
+        const { email, otp } = req.body;
 
         // Validation
-        if (!email || !otp || !name || !password) {
+        if (!email || !otp) {
             return res.status(400).json({
                 success: false,
-                message: 'Please provide email, OTP, name and password'
+                message: 'Please provide email and OTP'
             });
         }
 
@@ -87,8 +110,22 @@ const verifyRegistrationOTP = async (req, res) => {
             });
         }
 
+        // Get OTP record to retrieve temp data
+        const otpRecord = await OTP.findOne({
+            email: email.toLowerCase(),
+            purpose: 'user_registration',
+            verified: true
+        }).sort({ createdAt: -1 });
+
+        if (!otpRecord || !otpRecord.tempData) {
+            return res.status(400).json({
+                success: false,
+                message: 'OTP data not found. Please try registering again.'
+            });
+        }
+
         // Check if user already exists
-        const userExists = await User.findOne({ email });
+        const userExists = await User.findOne({ email: email.toLowerCase() });
         if (userExists) {
             return res.status(400).json({
                 success: false,
@@ -96,15 +133,15 @@ const verifyRegistrationOTP = async (req, res) => {
             });
         }
 
-        // Create user
+        // Create user with temp data from OTP
         const user = await User.create({
-            name,
+            name: otpRecord.tempData.name,
             email: email.toLowerCase(),
-            password
+            password: otpRecord.tempData.password
         });
 
         // Delete used OTP
-        await OTP.deleteOne({ email: email.toLowerCase(), purpose: 'user_registration', verified: true });
+        await OTP.deleteOne({ _id: otpRecord._id });
 
         // Generate token
         generateToken(res, user._id);
@@ -396,16 +433,32 @@ const adminLoginVerifyOTP = async (req, res) => {
 // @access  Public
 const resendOTP = async (req, res) => {
     try {
-        const { email, purpose } = req.body; // purpose: 'user_registration' or 'admin_login'
+        let { email, type } = req.body; // type: 'user_registration', 'admin_login', 'admin_creation'
 
-        if (!email || !purpose) {
+        if (!email || !type) {
             return res.status(400).json({
                 success: false,
-                message: 'Please provide email and purpose'
+                message: 'Please provide email and type'
             });
         }
 
-        if (!['user_registration', 'admin_login'].includes(purpose)) {
+        // Map various formats from frontend to snake_case for backend
+        const purposeMap = {
+            // User registration
+            'registration': 'user_registration',
+            'user-registration': 'user_registration',
+            'user_registration': 'user_registration',
+            // Admin login
+            'admin-login': 'admin_login',
+            'admin_login': 'admin_login',
+            // Admin creation
+            'admin': 'admin_creation',
+            'admin-creation': 'admin_creation',
+            'admin_creation': 'admin_creation'
+        };
+
+        const purpose = purposeMap[type];
+        if (!purpose) {
             return res.status(400).json({
                 success: false,
                 message: 'Invalid purpose'

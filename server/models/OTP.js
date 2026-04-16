@@ -13,8 +13,12 @@ const otpSchema = new mongoose.Schema(
     },
     purpose: {
       type: String,
-      enum: ['user_registration', 'admin_login'],
+      enum: ['user_registration', 'admin_login', 'admin_creation'],
       required: true
+    },
+    tempData: {
+      type: mongoose.Schema.Types.Mixed,
+      default: null
     },
     createdAt: {
       type: Date,
