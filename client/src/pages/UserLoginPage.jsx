@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { Mail, Lock, LogIn } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import Logo from '../components/Logo';
 
 const UserLoginPage = () => {
     const [email, setEmail] = useState('');
@@ -37,79 +37,113 @@ const UserLoginPage = () => {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-            <div className="w-full max-w-md bg-white rounded-xl shadow-lg p-8 border border-gray-200">
-                <Logo />
-
-                <h2 className="text-3xl font-bold text-center mb-2 text-gray-800">User Login</h2>
-                <p className="text-center text-gray-500 mb-6 text-sm">Sign in to your account</p>
-
-                {error && (
-                    <div className="mb-4 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
-                        <p className="font-medium">❌ {error}</p>
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-12">
+            <div className="w-full max-w-md">
+                {/* Brand Section */}
+                <div className="text-center mb-8">
+                    <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-full mb-4">
+                        <span className="text-white font-bold text-2xl">S</span>
                     </div>
-                )}
+                    <h1 className="text-3xl font-bold text-gray-900 mb-1">ShopHub</h1>
+                    <p className="text-gray-600 text-sm">Welcome back to your favorite store</p>
+                </div>
 
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">
-                            Email Address
-                        </label>
-                        <input
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
-                            placeholder="your@email.com"
-                        />
-                    </div>
+                {/* Login Card */}
+                <div className="card">
+                    <div className="card-body space-y-6">
+                        {error && (
+                            <div className="p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
+                                <p className="font-medium">✕ {error}</p>
+                            </div>
+                        )}
 
-                    <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">
-                            Password
-                        </label>
-                        <input
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
-                            placeholder="••••••••"
-                        />
-                    </div>
+                        <form onSubmit={handleSubmit} className="space-y-4">
+                            {/* Email Field */}
+                            <div className="form-group">
+                                <label className="label flex items-center gap-2">
+                                    <Mail size={16} className="text-indigo-600" />
+                                    Email Address
+                                </label>
+                                <input
+                                    type="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    required
+                                    className="input"
+                                    placeholder="your@email.com"
+                                />
+                            </div>
 
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition duration-200"
-                    >
-                        {loading ? 'Signing in...' : 'Sign In'}
-                    </button>
-                </form>
+                            {/* Password Field */}
+                            <div className="form-group">
+                                <label className="label flex items-center gap-2">
+                                    <Lock size={16} className="text-indigo-600" />
+                                    Password
+                                </label>
+                                <input
+                                    type="password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    required
+                                    className="input"
+                                    placeholder="••••••••"
+                                />
+                            </div>
 
-                <div className="mt-6 pt-6 border-t border-gray-200">
-                    <p className="text-center text-gray-600 mb-4">
-                        Don't have an account?{' '}
-                        <Link to="/register" className="text-blue-600 font-semibold hover:underline">
-                            Sign up here
+                            {/* Submit Button */}
+                            <button
+                                type="submit"
+                                disabled={loading}
+                                className="btn btn-primary w-full flex items-center justify-center gap-2 mt-6"
+                            >
+                                <LogIn size={18} />
+                                {loading ? 'Signing in...' : 'Sign In'}
+                            </button>
+                        </form>
+
+                        {/* Register Link */}
+                        <div className="divider"></div>
+
+                        <p className="text-center text-gray-600 text-sm">
+                            Don't have an account?{' '}
+                            <Link to="/register" className="text-indigo-600 font-semibold hover:text-indigo-700 transition">
+                                Sign up here
+                            </Link>
+                        </p>
+
+                        {/* Demo Button */}
+                        <button
+                            type="button"
+                            onClick={fillDemoUser}
+                            className="btn btn-secondary w-full text-sm"
+                        >
+                            📌 Fill Demo Credentials
+                        </button>
+
+                        {/* Admin Login Link */}
+                        <Link
+                            to="/admin-login"
+                            className="block text-center text-purple-600 text-sm font-medium hover:text-purple-700 transition"
+                        >
+                            Admin Login →
                         </Link>
-                    </p>
+                    </div>
+                </div>
 
-                    <button
-                        type="button"
-                        onClick={fillDemoUser}
-                        className="w-full bg-gray-100 text-gray-700 py-2 rounded-lg text-sm hover:bg-gray-200 transition"
-                    >
-                        📌 Demo User Credentials
-                    </button>
-
-                    <Link
-                        to="/admin-login"
-                        className="block text-center mt-3 text-purple-600 text-sm font-medium hover:underline"
-                    >
-                        Admin Login →
-                    </Link>
+                {/* Trust Badges */}
+                <div className="mt-8 grid grid-cols-3 gap-4 text-center">
+                    <div>
+                        <div className="text-2xl mb-2">🔒</div>
+                        <p className="text-xs text-gray-600">Secure</p>
+                    </div>
+                    <div>
+                        <div className="text-2xl mb-2">⚡</div>
+                        <p className="text-xs text-gray-600">Fast</p>
+                    </div>
+                    <div>
+                        <div className="text-2xl mb-2">✨</div>
+                        <p className="text-xs text-gray-600">Easy</p>
+                    </div>
                 </div>
             </div>
         </div>

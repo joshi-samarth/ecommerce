@@ -45,19 +45,20 @@ export default function CartDrawer() {
 
             {/* Drawer */}
             <div
-                className="fixed right-0 top-0 h-full w-full sm:w-96 bg-white shadow-lg z-50 flex flex-col transition-transform duration-300 ease-out"
+                className="fixed right-0 top-0 h-screen w-full sm:w-96 bg-white z-50 flex flex-col transition-transform duration-300 ease-out shadow-xl"
                 style={{
                     transform: drawerOpen ? 'translateX(0)' : 'translateX(100%)',
                 }}
             >
                 {/* Header */}
-                <div className="flex items-center justify-between p-4 border-b">
-                    <h2 className="text-lg font-semibold">
+                <div className="flex items-center justify-between p-5 border-b border-gray-200">
+                    <h2 className="text-lg font-semibold text-gray-900">
                         Your Cart ({cart.itemCount || 0})
                     </h2>
                     <button
                         onClick={closeDrawer}
-                        className="p-1 hover:bg-gray-100 rounded"
+                        className="btn-icon"
+                        title="Close Cart"
                     >
                         <X size={24} />
                     </button>
@@ -66,7 +67,7 @@ export default function CartDrawer() {
                 {/* Body */}
                 <div className="flex-1 overflow-y-auto">
                     {hasItems ? (
-                        <div className="p-4 space-y-2">
+                        <div className="p-4 space-y-3">
                             {cart.items.map((item) => (
                                 <CartItem key={item.product._id} item={item} />
                             ))}
@@ -77,7 +78,7 @@ export default function CartDrawer() {
                 </div>
 
                 {/* Footer */}
-                <div className="border-t p-4 bg-gray-50">
+                <div className="border-t border-gray-200 p-5 bg-gray-50">
                     <CartSummary showCheckoutButton={true} />
                 </div>
             </div>

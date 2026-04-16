@@ -12,6 +12,7 @@ import UserLoginPage from './pages/UserLoginPage';
 import AdminLoginPage from './pages/AdminLoginPage';
 import UserRegisterPage from './pages/UserRegisterPage';
 import HomePage from './pages/HomePage';
+import NotFoundPage from './pages/NotFoundPage';
 import AdminLayout from './layouts/AdminLayout';
 import AdminDashboardPage from './pages/admin/AdminDashboardPage';
 import AdminUsersPage from './pages/admin/AdminUsersPage';
@@ -83,8 +84,11 @@ function App() {
                     </Route>
                 </Route>
 
+                {/* Not Found Route */}
+                <Route path="/404" element={<NotFoundPage />} />
+
                 {/* Catch-all redirect */}
-                <Route path="*" element={<Navigate to="/" replace />} />
+                <Route path="*" element={<NotFoundPage />} />
             </Routes>
 
             {/* Cart Drawer - must be inside Router for useNavigate() */}
@@ -101,7 +105,25 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                     <App />
                 </WishlistProvider>
             </CartProvider>
-            <Toaster position="bottom-right" />
+            <Toaster
+                position="bottom-right"
+                toastOptions={{
+                    duration: 3000,
+                    style: {
+                        background: '#111827',
+                        color: '#F9FAFB',
+                        borderRadius: '12px',
+                        fontSize: '14px',
+                        padding: '12px 16px',
+                    },
+                    success: {
+                        iconTheme: { primary: '#10B981', secondary: '#F9FAFB' }
+                    },
+                    error: {
+                        iconTheme: { primary: '#EF4444', secondary: '#F9FAFB' }
+                    }
+                }}
+            />
         </AuthProvider>
     </React.StrictMode>,
 );

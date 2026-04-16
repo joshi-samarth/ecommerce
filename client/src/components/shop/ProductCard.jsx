@@ -37,53 +37,64 @@ export default function ProductCard({ product }) {
         }
     };
 
+    const discountPercent = product.comparePrice && product.price
+        ? Math.round(((product.comparePrice - product.price) / product.comparePrice) * 100)
+        : 0;
+
     return (
         <div
             onClick={handleCardClick}
-            className="bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden group cursor-pointer"
+            className="card hover:shadow-lg transition-all duration-300 overflow-hidden group cursor-pointer h-full flex flex-col"
         >
             {/* Image Container */}
             <div className="relative overflow-hidden bg-gray-100 aspect-square">
                 <img
                     src={image}
                     alt={product.name}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
 
-                {/* Category Badge */}
+                {/* Top Overlay: Category Badge */}
                 {product.category && (
-                    <div className="absolute top-2 left-2 bg-primary text-white px-2 py-1 rounded text-xs font-semibold">
+                    <div className="absolute top-3 left-3 badge badge-primary shadow-sm">
                         {product.category.name}
                     </div>
                 )}
 
-                {/* Wishlist Button */}
-                <div className="absolute top-2 right-2">
+                {/* Top Right: Wishlist Button */}
+                <div className="absolute top-3 right-3">
                     <WishlistButton productId={product._id} size="sm" />
                 </div>
 
+                {/* Discount Badge */}
+                {discountPercent > 0 && (
+                    <div className="absolute bottom-3 right-3 badge badge-success">
+                        -{discountPercent}%
+                    </div>
+                )}
+
                 {/* Out of Stock Overlay */}
                 {isOutOfStock && (
-                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                    <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
                         <span className="text-white font-bold text-lg">Out of Stock</span>
                     </div>
                 )}
             </div>
 
             {/* Content */}
-            <div className="p-4">
+            <div className="card-body flex flex-col flex-grow">
                 {/* Product Name */}
-                <h3 className="text-sm font-semibold text-gray-800 line-clamp-2 mb-2">
+                <h3 className="font-medium text-gray-900 line-clamp-2 mb-2 text-sm">
                     {product.name}
                 </h3>
 
                 {/* Rating */}
-                <div className="mb-2">
+                <div className="mb-3">
                     <RatingStars rating={product.averageRating} numReviews={product.numReviews} size="sm" />
                 </div>
 
                 {/* Price */}
-                <div className="mb-3">
+                <div className="mb-4 mt-auto">
                     <PriceDisplay
                         price={product.price}
                         comparePrice={product.comparePrice}
@@ -95,9 +106,9 @@ export default function ProductCard({ product }) {
                 <button
                     onClick={handleAddToCart}
                     disabled={isOutOfStock}
-                    className={`w-full py-2 px-4 rounded-lg font-semibold flex items-center justify-center gap-2 transition-colors ${isOutOfStock
-                        ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                        : 'bg-primary text-white hover:bg-primary-dark'
+                    className={`btn btn-sm w-full flex items-center justify-center gap-2 ${isOutOfStock
+                            ? 'btn-secondary opacity-50 cursor-not-allowed'
+                            : 'btn-primary'
                         }`}
                 >
                     <ShoppingCart size={16} />
