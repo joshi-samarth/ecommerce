@@ -143,9 +143,9 @@ exports.getProductBySlug = async (req, res) => {
             .populate('ratings.user', 'name');
 
         if (!product) {
-            return res.status(404).json({ 
-                success: false, 
-                message: 'Product not found. Please check the product URL.' 
+            return res.status(404).json({
+                success: false,
+                message: 'Product not found. Please check the product URL.'
             });
         }
 
