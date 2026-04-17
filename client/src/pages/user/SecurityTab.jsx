@@ -168,11 +168,11 @@ const SecurityTab = () => {
             <div className="bg-amber-50 border border-amber-200 rounded-lg p-6">
                 <h3 className="font-semibold text-amber-900 mb-3">🔒 Password Security Tips</h3>
                 <ul className="space-y-2 text-amber-800 text-sm">
-                    <li>✓ Use a password with at least 6 characters</li>
-                    <li>✓ Mix uppercase and lowercase letters</li>
-                    <li>✓ Include numbers and special characters</li>
-                    <li>✓ Never share your password with anyone</li>
-                    <li>✓ Change your password regularly</li>
+                    <li>✓ At least 8 characters long</li>
+                    <li>✓ Contains both uppercase and lowercase letters</li>
+                    <li>✓ Includes at least one number</li>
+                    <li>✓ Includes at least one special character (e.g., @, #, $, %)</li>
+                    <li>✓ Must not be easily guessable (avoid common words or personal info)</li>
                 </ul>
             </div>
         </div>
