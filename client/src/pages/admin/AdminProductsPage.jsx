@@ -179,13 +179,16 @@ export default function AdminProductsPage() {
     };
 
     return (
-        <div className="space-y-6">
+        <div className="p-8 space-y-8">
             {/* Header */}
-            <div className="flex justify-between items-center">
-                <h1 className="text-3xl font-bold text-gray-900">Products</h1>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                    <h1 className="text-3xl font-bold text-gray-900">Products</h1>
+                    <p className="text-gray-600 text-sm mt-1">Manage your product catalog</p>
+                </div>
                 <button
                     onClick={() => navigate('/admin/products/new')}
-                    className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
+                    className="btn btn-primary w-full sm:w-auto flex items-center justify-center gap-2"
                 >
                     <Plus size={18} />
                     Add Product
@@ -194,38 +197,41 @@ export default function AdminProductsPage() {
 
             {/* Stats */}
             {stats && (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div className="p-4 bg-white rounded-lg border border-gray-200">
-                        <div className="text-sm text-gray-600 font-semibold">Total Products</div>
-                        <div className="text-2xl font-bold text-gray-900 mt-1">{stats.totalProducts}</div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div className="card border-l-4 border-indigo-200">
+                        <p className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Total Products</p>
+                        <p className="text-3xl font-bold text-gray-900">{stats.totalProducts}</p>
                     </div>
-                    <div className="p-4 bg-white rounded-lg border border-gray-200">
-                        <div className="text-sm text-gray-600 font-semibold">Active</div>
-                        <div className="text-2xl font-bold text-green-600 mt-1">{stats.activeProducts}</div>
+                    <div className="card border-l-4 border-emerald-200">
+                        <p className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Active</p>
+                        <p className="text-3xl font-bold text-emerald-600">{stats.activeProducts}</p>
                     </div>
-                    <div className="p-4 bg-white rounded-lg border border-gray-200">
-                        <div className="text-sm text-gray-600 font-semibold">Out of Stock</div>
-                        <div className="text-2xl font-bold text-red-600 mt-1">{stats.outOfStock}</div>
+                    <div className="card border-l-4 border-red-200">
+                        <p className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Out of Stock</p>
+                        <p className="text-3xl font-bold text-red-600">{stats.outOfStock}</p>
                     </div>
-                    <div className="p-4 bg-white rounded-lg border border-gray-200">
-                        <div className="text-sm text-gray-600 font-semibold">Low Stock</div>
-                        <div className="text-2xl font-bold text-amber-600 mt-1">{stats.lowStock}</div>
+                    <div className="card border-l-4 border-amber-200">
+                        <p className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Low Stock</p>
+                        <p className="text-3xl font-bold text-amber-600">{stats.lowStock}</p>
                     </div>
                 </div>
             )}
 
             {/* Filters */}
-            <div className="bg-white p-4 rounded-lg border border-gray-200 space-y-4">
+            <div className="card space-y-4">
+                <div className="flex items-center justify-between pb-4 border-b border-gray-200">
+                    <h3 className="font-semibold text-gray-900">Filters</h3>
+                </div>
                 <div className="flex flex-col md:flex-row gap-4">
                     {/* Search */}
-                    <div className="flex-1 flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg bg-white">
-                        <Search size={18} className="text-gray-400" />
+                    <div className="flex-1 relative">
+                        <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
                         <input
                             type="text"
                             placeholder="Search products..."
                             value={search}
                             onChange={handleSearch}
-                            className="flex-1 outline-none text-sm"
+                            className="input pl-10 w-full"
                         />
                     </div>
 
@@ -233,7 +239,7 @@ export default function AdminProductsPage() {
                     <select
                         value={category}
                         onChange={handleCategoryFilter}
-                        className="px-4 py-2 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
+                        className="input"
                     >
                         <option value="">All Categories</option>
                         {categories.map((cat) => (
@@ -247,7 +253,7 @@ export default function AdminProductsPage() {
                     <select
                         value={status}
                         onChange={handleStatusFilter}
-                        className="px-4 py-2 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
+                        className="input"
                     >
                         <option value="">All Status</option>
                         <option value="active">Active</option>

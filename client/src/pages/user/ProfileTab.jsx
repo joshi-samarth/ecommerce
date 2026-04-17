@@ -92,13 +92,13 @@ const ProfileTab = () => {
     return (
         <div className="space-y-6">
             <div>
-                <h2 className="text-3xl font-bold text-gray-800 mb-1">My Profile</h2>
+                <h2 className="section-title">My Profile</h2>
                 <p className="text-gray-600">Update your personal information</p>
             </div>
 
             {/* Success Message */}
             {success && (
-                <div className="bg-green-50 border border-green-200 text-green-700 p-4 rounded-lg">
+                <div className="bg-emerald-50 border border-emerald-200 text-emerald-700 p-4 rounded-lg">
                     {success}
                 </div>
             )}
@@ -136,18 +136,18 @@ const ProfileTab = () => {
 
                 {/* User Info Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-lg">
+                    <div className="bg-gradient-to-br from-indigo-50 to-indigo-100 p-4 rounded-lg border border-indigo-200">
                         <p className="text-sm text-gray-600 font-medium">Account Type</p>
                         <div className="mt-2 flex items-center gap-2">
                             <span className="text-2xl">{user.role === 'admin' ? '👑' : '👤'}</span>
-                            <span className={`text-lg font-semibold ${user.role === 'admin' ? 'text-purple-600' : 'text-blue-600'}`}>
+                            <span className={`text-lg font-semibold ${user.role === 'admin' ? 'text-indigo-700' : 'text-indigo-600'}`}>
                                 {user.role === 'admin' ? 'Admin User' : 'Regular User'}
                             </span>
                         </div>
                     </div>
-                    <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-4 rounded-lg">
+                    <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 p-4 rounded-lg border border-emerald-200">
                         <p className="text-sm text-gray-600 font-medium">Member Since</p>
-                        <p className="text-lg font-semibold text-purple-600 mt-2">
+                        <p className="text-lg font-semibold text-emerald-600 mt-2">
                             {formatDate(user.createdAt)}
                         </p>
                     </div>
@@ -158,7 +158,7 @@ const ProfileTab = () => {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="px-6 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center gap-2"
+                        className="btn btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         {loading ? (
                             <>

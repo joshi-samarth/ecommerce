@@ -17,10 +17,10 @@ const CheckoutSteps = ({ currentStep }) => {
             <div className="flex flex-col items-center">
               <div
                 className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg transition-all ${stepItem.step < currentStep
-                    ? 'bg-green-500 text-white'
-                    : stepItem.step === currentStep
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-200 text-gray-600'
+                  ? 'bg-emerald-500 text-white'
+                  : stepItem.step === currentStep
+                    ? 'bg-indigo-600 text-white'
+                    : 'bg-gray-200 text-gray-600'
                   }`}
               >
                 {stepItem.step < currentStep ? (
@@ -31,10 +31,10 @@ const CheckoutSteps = ({ currentStep }) => {
               </div>
               <p
                 className={`mt-2 text-sm font-medium ${stepItem.step === currentStep
-                    ? 'text-blue-600 font-bold'
-                    : stepItem.step < currentStep
-                      ? 'text-green-600'
-                      : 'text-gray-500'
+                  ? 'text-indigo-600 font-bold'
+                  : stepItem.step < currentStep
+                    ? 'text-emerald-600'
+                    : 'text-gray-500'
                   }`}
               >
                 {stepItem.label}
@@ -45,8 +45,8 @@ const CheckoutSteps = ({ currentStep }) => {
             {idx < steps.length - 1 && (
               <div
                 className={`h-1 w-16 mx-2 transition-all ${stepItem.step < currentStep
-                    ? 'bg-green-500'
-                    : 'bg-gray-300'
+                  ? 'bg-emerald-500'
+                  : 'bg-gray-300'
                   }`}
               />
             )}

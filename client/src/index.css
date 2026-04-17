@@ -71,52 +71,57 @@
         align-items: center;
         justify-content: center;
         gap: 8px;
-        padding: 10px 20px;
-        border-radius: 10px;
+        padding: 11px 22px;
+        border-radius: 12px;
         font-size: 14px;
-        font-weight: 500;
+        font-weight: 600;
         border: none;
         cursor: pointer;
-        transition: all 0.2s ease;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         white-space: nowrap;
     }
 
     .btn:disabled {
-        opacity: 0.6;
+        opacity: 0.5;
         cursor: not-allowed;
         transform: none !important;
     }
 
     .btn-primary {
-        background: #6366F1;
+        background: linear-gradient(135deg, #6366F1 0%, #818CF8 100%);
         color: white;
+        box-shadow: 0 2px 8px rgba(99, 102, 241, 0.25);
     }
 
     .btn-primary:hover:not(:disabled) {
-        background: #4F46E5;
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+        background: linear-gradient(135deg, #4F46E5 0%, #6366F1 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
     }
 
     .btn-secondary {
         background: white;
         color: #374151;
         border: 1.5px solid #E5E7EB;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
     }
 
     .btn-secondary:hover:not(:disabled) {
         background: #F9FAFB;
         border-color: #D1D5DB;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     }
 
     .btn-danger {
-        background: #EF4444;
+        background: linear-gradient(135deg, #EF4444 0%, #F87171 100%);
         color: white;
+        box-shadow: 0 2px 8px rgba(239, 68, 68, 0.25);
     }
 
     .btn-danger:hover:not(:disabled) {
-        background: #DC2626;
-        transform: translateY(-1px);
+        background: linear-gradient(135deg, #DC2626 0%, #EF4444 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
     }
 
     .btn-ghost {
@@ -131,24 +136,28 @@
     }
 
     .btn-sm {
-        padding: 6px 14px;
+        padding: 7px 16px;
         font-size: 13px;
+        font-weight: 500;
     }
 
     .btn-lg {
-        padding: 14px 28px;
+        padding: 14px 32px;
         font-size: 16px;
+        font-weight: 600;
     }
 
     .btn-icon {
-        padding: 8px;
-        border-radius: 8px;
-        background: transparent;
-        border: none;
+        padding: 10px;
+        border-radius: 10px;
+        background: white;
+        border: 1.5px solid #E5E7EB;
+        transition: all 0.3s ease;
     }
 
     .btn-icon:hover {
-        background: #F3F4F6;
+        background: #F9FAFB;
+        border-color: #D1D5DB;
     }
 
     /* ── Cards ── */
@@ -157,14 +166,21 @@
         border-radius: 16px;
         border: 1px solid #E5E7EB;
         overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+    }
+
+    .card:hover {
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        border-color: #D1D5DB;
     }
 
     .card-body {
-        padding: 20px;
+        padding: 24px;
     }
 
     .card-header {
-        padding: 16px 20px;
+        padding: 20px 24px;
         border-bottom: 1px solid #F3F4F6;
         display: flex;
         align-items: center;
@@ -172,7 +188,7 @@
     }
 
     .card-footer {
-        padding: 16px 20px;
+        padding: 20px 24px;
         border-top: 1px solid #F3F4F6;
         background: #F9FAFB;
     }
@@ -180,19 +196,20 @@
     /* ── Form inputs ── */
     .input {
         width: 100%;
-        padding: 10px 14px;
+        padding: 12px 14px;
         border: 1.5px solid #E5E7EB;
-        border-radius: 10px;
+        border-radius: 12px;
         font-size: 14px;
         color: #111827;
         background: white;
-        transition: border-color 0.2s, box-shadow 0.2s;
+        transition: all 0.3s ease;
         outline: none;
     }
 
     .input:focus {
         border-color: #6366F1;
-        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        background: white;
     }
 
     .input:disabled {

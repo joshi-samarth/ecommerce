@@ -37,11 +37,11 @@ export default function CartItem({ item }) {
     const lineTotal = item.price * item.quantity;
 
     return (
-        <div className="flex gap-4 py-4 border-b">
+        <div className="flex gap-4 py-4 px-4 border-b border-gray-200 hover:bg-gray-50 transition">
             {/* Product Image */}
             <Link
                 to={`/products/${product.slug}`}
-                className="flex-shrink-0 w-20 h-20 bg-gray-200 rounded overflow-hidden"
+                className="flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden bg-gray-100 hover:opacity-80 transition"
             >
                 <img
                     src={product.images?.[0] || 'https://via.placeholder.com/80'}
@@ -51,19 +51,20 @@ export default function CartItem({ item }) {
             </Link>
 
             {/* Product Details */}
-            <div className="flex-1">
+            <div className="flex-1 min-w-0">
                 <Link
                     to={`/products/${product.slug}`}
-                    className="font-medium text-gray-900 hover:text-blue-600"
+                    className="font-medium text-gray-900 hover:text-indigo-600 transition line-clamp-2"
                 >
                     {product.name}
                 </Link>
 
-                {/* Price */}
-                <p className="text-sm text-gray-600 mt-1">₹{item.price.toFixed(2)} each</p>
+                {/* Category/Price */}
+                <p className="text-xs text-gray-500 mt-1">{product.category?.name}</p>
+                <p className="text-sm font-semibold text-indigo-600 mt-2">₹{item.price.toFixed(2)}</p>
 
                 {outOfStock && (
-                    <p className="text-xs text-red-600 font-medium mt-1">Out of stock</p>
+                    <p className="text-xs text-red-600 font-medium mt-2">Out of stock</p>
                 )}
 
                 {/* Quantity Selector */}
@@ -71,33 +72,31 @@ export default function CartItem({ item }) {
                     <button
                         onClick={() => handleQuantityChange(item.quantity - 1)}
                         disabled={isUpdating || outOfStock}
-                        className="p-1 rounded border hover:bg-gray-100 disabled:opacity-50"
+                        className="p-1 rounded-lg border border-gray-200 hover:bg-gray-100 disabled:opacity-50 transition"
+                        title="Decrease quantity"
                     >
-                        <Minus size={16} />
+                        <Minus size={16} className="text-gray-600" />
                     </button>
-                    <input
-                        type="number"
-                        value={item.quantity}
-                        readOnly
-                        className="w-12 text-center border rounded py-1"
-                    />
+                    <div className="w-10 text-center font-medium text-gray-900">{item.quantity}</div>
                     <button
                         onClick={() => handleQuantityChange(item.quantity + 1)}
                         disabled={isUpdating || item.quantity >= product.stock || outOfStock}
-                        className="p-1 rounded border hover:bg-gray-100 disabled:opacity-50"
+                        className="p-1 rounded-lg border border-gray-200 hover:bg-gray-100 disabled:opacity-50 transition"
+                        title="Increase quantity"
                     >
-                        <Plus size={16} />
+                        <Plus size={16} className="text-gray-600" />
                     </button>
                 </div>
             </div>
 
             {/* Line Total and Remove */}
             <div className="flex flex-col items-end justify-between">
-                <p className="font-semibold text-gray-900">₹{lineTotal.toFixed(2)}</p>
+                <p className="font-bold text-gray-900 text-lg">₹{lineTotal.toFixed(2)}</p>
                 <button
                     onClick={handleRemove}
                     disabled={isUpdating}
-                    className="text-red-600 hover:text-red-700 disabled:opacity-50"
+                    className="btn-icon text-red-600 hover:bg-red-50 disabled:opacity-50 transition"
+                    title="Remove from cart"
                 >
                     <Trash2 size={18} />
                 </button>

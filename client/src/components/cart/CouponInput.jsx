@@ -34,7 +34,7 @@ export default function CouponInput() {
     };
 
     return (
-        <div className="py-4 border-t">
+        <div className="space-y-3">
             {!couponApplied ? (
                 <div className="flex gap-2">
                     <input
@@ -43,33 +43,35 @@ export default function CouponInput() {
                         value={code}
                         onChange={(e) => setCode(e.target.value.toUpperCase())}
                         disabled={isLoading}
-                        className="flex-1 px-3 py-2 border rounded text-sm disabled:bg-gray-100"
+                        className="input flex-1 text-sm"
                     />
                     <button
                         onClick={handleApply}
                         disabled={isLoading || !code.trim()}
-                        className="px-4 py-2 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 disabled:bg-gray-400"
+                        className="btn btn-primary btn-sm"
                     >
                         Apply
                     </button>
                 </div>
             ) : (
-                <div className="flex items-center justify-between bg-green-50 p-3 rounded border border-green-200">
-                    <div>
-                        <p className="text-sm font-medium text-green-700">
-                            Coupon applied: <span className="font-bold">{typeof couponApplied === 'object' ? couponApplied.code : 'Coupon'}</span>
-                        </p>
-                        <p className="text-xs text-green-600 mt-1">
-                            You saved ₹{cart.discount?.toFixed(2) || '0.00'}
-                        </p>
+                <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-xl">
+                    <div className="flex items-center justify-between gap-4">
+                        <div>
+                            <p className="text-sm font-semibold text-emerald-700">
+                                ✓ Coupon Applied: <span className="font-bold">{typeof couponApplied === 'object' ? couponApplied.code : 'Coupon'}</span>
+                            </p>
+                            <p className="text-xs text-emerald-600 mt-1">
+                                You saved ₹{cart.discount?.toFixed(2) || '0.00'}
+                            </p>
+                        </div>
+                        <button
+                            onClick={handleRemove}
+                            disabled={isLoading}
+                            className="btn btn-sm btn-danger text-xs"
+                        >
+                            Remove
+                        </button>
                     </div>
-                    <button
-                        onClick={handleRemove}
-                        disabled={isLoading}
-                        className="px-3 py-1 bg-red-100 text-red-600 rounded text-sm hover:bg-red-200 disabled:opacity-50"
-                    >
-                        Remove
-                    </button>
                 </div>
             )}
         </div>

@@ -19,15 +19,15 @@ const ReviewStep = ({ address, onBack, onPlaceOrder, loading }) => {
       {/* Left Column: Items and Address */}
       <div className="lg:col-span-2 space-y-6">
         {/* Delivery Address */}
-        <div className="border rounded-lg p-4">
+        <div className="card border rounded-lg p-4">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <MapPin className="w-5 h-5 text-blue-600" />
+              <MapPin className="w-5 h-5 text-indigo-600" />
               <h3 className="font-semibold">Delivery Address</h3>
             </div>
             <button
               onClick={onBack}
-              className="text-blue-600 hover:underline text-sm"
+              className="text-indigo-600 hover:underline text-sm"
             >
               Change
             </button>
@@ -46,26 +46,26 @@ const ReviewStep = ({ address, onBack, onPlaceOrder, loading }) => {
         </div>
 
         {/* Order Items */}
-        <div className="border rounded-lg p-4">
+        <div className="card border rounded-lg p-4">
           <h3 className="font-semibold mb-4">Order Items</h3>
           <OrderItemsList items={cart.items} />
         </div>
 
         {/* Payment Method */}
-        <div className="border rounded-lg p-4">
+        <div className="card border rounded-lg p-4">
           <div className="flex items-center gap-2 mb-4">
-            <CreditCard className="w-5 h-5 text-blue-600" />
+            <CreditCard className="w-5 h-5 text-indigo-600" />
             <h3 className="font-semibold">Payment Method</h3>
           </div>
           <div className="space-y-3">
-            <label className="flex items-center p-3 border-2 border-blue-600 rounded-lg cursor-pointer bg-blue-50">
+            <label className="flex items-center p-3 border-2 border-indigo-600 rounded-lg cursor-pointer bg-indigo-50">
               <input
                 type="radio"
                 name="payment"
                 value="cod"
                 defaultChecked
                 disabled
-                className="w-4 h-4 text-blue-600"
+                className="w-4 h-4 text-indigo-600"
               />
               <div className="ml-3">
                 <p className="font-medium">Cash on Delivery</p>
@@ -95,7 +95,7 @@ const ReviewStep = ({ address, onBack, onPlaceOrder, loading }) => {
 
       {/* Right Column: Price Breakdown */}
       <div className="lg:col-span-1">
-        <div className="bg-gray-50 border rounded-lg p-4 sticky top-4 space-y-4">
+        <div className="card bg-gray-50 border rounded-lg p-4 sticky top-4 space-y-4">
           <h3 className="font-semibold text-lg">Price Breakdown</h3>
 
           <div className="space-y-3 border-b pb-4">
@@ -105,7 +105,7 @@ const ReviewStep = ({ address, onBack, onPlaceOrder, loading }) => {
             </div>
 
             {discount > 0 && (
-              <div className="flex justify-between text-sm text-green-600">
+              <div className="flex justify-between text-sm text-emerald-600">
                 <span>Discount {cart.coupon && `(${cart.coupon.code})`}</span>
                 <span>−₹{discount.toLocaleString('en-IN')}</span>
               </div>
@@ -115,7 +115,7 @@ const ReviewStep = ({ address, onBack, onPlaceOrder, loading }) => {
               <span>Shipping</span>
               <span>
                 {shippingCharge === 0 ? (
-                  <span className="text-green-600">FREE</span>
+                  <span className="text-emerald-600">FREE</span>
                 ) : (
                   `₹${shippingCharge}`
                 )}
@@ -125,20 +125,20 @@ const ReviewStep = ({ address, onBack, onPlaceOrder, loading }) => {
 
           <div className="flex justify-between font-bold text-lg">
             <span>Total</span>
-            <span className="text-blue-600">₹{total.toLocaleString('en-IN')}</span>
+            <span className="text-indigo-600">₹{total.toLocaleString('en-IN')}</span>
           </div>
 
           <button
             onClick={onPlaceOrder}
             disabled={loading}
-            className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 disabled:bg-gray-400 transition-colors font-bold text-lg"
+            className="btn btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed text-lg py-3 font-bold"
           >
             {loading ? 'Placing Order...' : 'Place Order'}
           </button>
 
           <button
             onClick={onBack}
-            className="w-full mt-3 border border-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+            className="btn btn-secondary w-full"
           >
             Back to Address
           </button>

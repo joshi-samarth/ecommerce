@@ -94,13 +94,13 @@ const SecurityTab = () => {
     return (
         <div className="space-y-6">
             <div>
-                <h2 className="text-3xl font-bold text-gray-800">Security Settings</h2>
+                <h2 className="section-title">Security Settings</h2>
                 <p className="text-gray-600">Change your password to keep your account secure</p>
             </div>
 
             {/* Success Message */}
             {success && (
-                <div className="bg-green-50 border border-green-200 text-green-700 p-4 rounded-lg">
+                <div className="bg-emerald-50 border border-emerald-200 text-emerald-700 p-4 rounded-lg">
                     {success}
                 </div>
             )}
@@ -113,7 +113,7 @@ const SecurityTab = () => {
             )}
 
             {/* Change Password Form */}
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-8 rounded-lg border border-blue-200 max-w-md">
+            <div className="card p-8 border-2 border-indigo-200 max-w-md">
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <FormInput
                         label="Current Password"
@@ -151,7 +151,7 @@ const SecurityTab = () => {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full px-6 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center justify-center gap-2"
+                        className="btn btn-primary w-full flex items-center justify-center gap-2"
                     >
                         {loading ? (
                             <>

@@ -75,7 +75,7 @@ const AddressStep = ({ selectedAddress, onSelect, onContinue }) => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-32">
-        <Loader2 className="animate-spin w-8 h-8 text-blue-600" />
+        <Loader2 className="animate-spin w-8 h-8 text-indigo-600" />
       </div>
     )
   }
@@ -92,14 +92,14 @@ const AddressStep = ({ selectedAddress, onSelect, onContinue }) => {
                 key={address._id}
                 onClick={() => onSelect(address)}
                 className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${selectedAddress?._id === address._id
-                    ? 'border-blue-600 bg-blue-50'
-                    : 'border-gray-300 hover:border-gray-400'
+                  ? 'border-indigo-600 bg-indigo-50'
+                  : 'border-gray-300 hover:border-gray-400'
                   }`}
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2">
-                      <MapPin className="w-5 h-5 text-blue-600" />
+                      <MapPin className="w-5 h-5 text-indigo-600" />
                       <p className="font-semibold">{address.fullName}</p>
                     </div>
                     <p className="text-sm text-gray-600">
@@ -114,7 +114,7 @@ const AddressStep = ({ selectedAddress, onSelect, onContinue }) => {
                   {selectedAddress?._id === address._id && (
                     <button
                       onClick={() => onContinue()}
-                      className="ml-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors whitespace-nowrap"
+                      className="ml-4 btn btn-primary whitespace-nowrap"
                     >
                       Deliver Here
                     </button>
@@ -130,14 +130,14 @@ const AddressStep = ({ selectedAddress, onSelect, onContinue }) => {
       <div className="border-t pt-6">
         <button
           onClick={() => setShowForm(!showForm)}
-          className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium mb-4"
+          className="flex items-center gap-2 text-indigo-600 hover:text-indigo-700 font-medium mb-4"
         >
           <Plus className="w-5 h-5" />
           Add New Address
         </button>
 
         {(showForm || addresses.length === 0) && (
-          <form onSubmit={handleAddAddress} className="space-y-4 p-4 bg-gray-50 rounded-lg">
+          <form onSubmit={handleAddAddress} className="card space-y-4 p-4 border-2 border-indigo-200">
             <h3 className="font-semibold mb-4">Enter Delivery Address</h3>
 
             <FormInput
@@ -202,7 +202,7 @@ const AddressStep = ({ selectedAddress, onSelect, onContinue }) => {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 disabled:bg-gray-400 transition-colors font-medium"
+              className="btn btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {submitting ? 'Saving...' : 'Save Address & Continue'}
             </button>

@@ -5,7 +5,7 @@ import TopBar from '../components/admin/TopBar';
 
 const AdminLayout = () => {
     return (
-        <div className="flex h-screen bg-gray-100">
+        <div className="flex h-screen bg-gray-50">
             {/* Sidebar */}
             <Sidebar />
 
@@ -15,7 +15,7 @@ const AdminLayout = () => {
                 <TopBar />
 
                 {/* Page Content */}
-                <main className="flex-1 overflow-y-auto">
+                <main className="flex-1 overflow-y-auto bg-white">
                     <Outlet />
                 </main>
             </div>

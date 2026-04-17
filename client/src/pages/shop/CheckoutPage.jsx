@@ -66,7 +66,7 @@ const CheckoutPage = () => {
           {/* Back Button */}
           <button
             onClick={() => navigate('/cart')}
-            className="flex items-center gap-2 text-blue-600 hover:text-blue-700 mb-6 font-medium"
+            className="flex items-center gap-2 text-indigo-600 hover:text-indigo-700 mb-6 font-medium"
           >
             <ChevronLeft className="w-5 h-5" />
             Back to Cart
@@ -74,7 +74,7 @@ const CheckoutPage = () => {
 
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">Checkout</h1>
+            <h1 className="section-title">Checkout</h1>
             <p className="text-gray-600 mt-2">{cart.items.length} items in your order</p>
           </div>
 
@@ -82,7 +82,7 @@ const CheckoutPage = () => {
           <CheckoutSteps currentStep={currentStep} />
 
           {/* Content */}
-          <div className="bg-white rounded-lg p-6 sm:p-8 mt-8">
+          <div className="card p-6 sm:p-8 mt-8">
             {currentStep === 1 && (
               <>
                 <h2 className="text-2xl font-bold mb-6">Select Delivery Address</h2>
@@ -94,13 +94,13 @@ const CheckoutPage = () => {
                 <div className="mt-8 flex gap-4">
                   <button
                     onClick={() => navigate('/cart')}
-                    className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium"
+                    className="btn btn-secondary"
                   >
                     Back to Cart
                   </button>
                   <button
                     onClick={handleContinueAddress}
-                    className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium"
+                    className="btn btn-primary"
                   >
                     Continue to Review
                   </button>

@@ -200,7 +200,7 @@ const AdminUsersPage = () => {
         return (
             <div className="flex items-center justify-center h-full">
                 <div className="text-center">
-                    <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
+                    <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mb-4"></div>
                     <p className="text-gray-600">Loading users...</p>
                 </div>
             </div>
@@ -211,7 +211,7 @@ const AdminUsersPage = () => {
         <div className="p-6 space-y-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <h2 className="text-2xl font-bold text-gray-800">Manage Users</h2>
+                    <h2 className="section-title">Manage Users</h2>
                     <p className="text-gray-600 text-sm mt-1">Total users: {users.length}</p>
                 </div>
                 <button
@@ -227,7 +227,7 @@ const AdminUsersPage = () => {
                         setAdminOtp('');
                         setError('');
                     }}
-                    className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition"
+                    className="btn btn-primary"
                 >
                     {showCreateAdmin ? '❌ Cancel' : '➕ Add Admin'}
                 </button>
@@ -242,7 +242,7 @@ const AdminUsersPage = () => {
             )}
 
             {success && (
-                <div className="bg-green-50 border border-green-200 text-green-700 p-4 rounded-lg flex items-center gap-2">
+                <div className="bg-emerald-50 border border-emerald-200 text-emerald-700 p-4 rounded-lg flex items-center gap-2">
                     <span>✅</span>
                     <p>{success}</p>
                 </div>
@@ -450,8 +450,8 @@ const AdminUsersPage = () => {
             </div>
 
             {/* Info Box */}
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <p className="text-sm text-blue-800">
+            <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-4">
+                <p className="text-sm text-indigo-800">
                     <strong>ℹ️ Note:</strong> Users can only be deleted by database administration. Use the "Make User" button to demote admins and restrict their access. All actions are logged for security.
                 </p>
             </div>

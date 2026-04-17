@@ -117,10 +117,10 @@ export default function AdminCouponsPage() {
         <div className="space-y-6">
             {/* Header */}
             <div className="flex justify-between items-center">
-                <h1 className="text-3xl font-bold text-gray-900">Coupons</h1>
+                <h1 className="section-title">Coupons</h1>
                 <button
                     onClick={handleCreateClick}
-                    className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
+                    className="btn btn-primary flex items-center gap-2"
                 >
                     <Plus size={18} />
                     Create Coupon
@@ -144,7 +144,7 @@ export default function AdminCouponsPage() {
                     </div>
                     <div className="p-4 bg-white rounded-lg border border-gray-200">
                         <div className="text-sm text-gray-600 font-semibold">Total Discount</div>
-                        <div className="text-2xl font-bold text-blue-600 mt-1">₹{stats.totalDiscountGiven}</div>
+                        <div className="text-2xl font-bold text-indigo-600 mt-1">₹{stats.totalDiscountGiven}</div>
                     </div>
                 </div>
             )}

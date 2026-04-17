@@ -112,10 +112,10 @@ export default function AdminCategoriesPage() {
         <div className="space-y-6">
             {/* Header */}
             <div className="flex justify-between items-center">
-                <h1 className="text-3xl font-bold text-gray-900">Categories</h1>
+                <h1 className="section-title">Categories</h1>
                 <button
                     onClick={handleCreateClick}
-                    className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
+                    className="btn btn-primary flex items-center gap-2"
                 >
                     <Plus size={18} />
                     Add Category

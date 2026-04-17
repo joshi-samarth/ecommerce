@@ -47,22 +47,22 @@ export default function SearchBar({
     return (
         <div className="relative flex-1">
             <div className="relative flex items-center">
-                <Search className="absolute left-3 text-gray-400" size={20} />
+                <Search className="absolute left-3.5 text-gray-400 pointer-events-none" size={18} />
                 <input
                     type="text"
                     value={inputValue}
                     onChange={handleChange}
                     onKeyDown={handleKeyDown}
                     placeholder={placeholder}
-                    className="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    className="input pl-10 pr-10"
                 />
                 {inputValue && (
                     <button
                         onClick={handleClear}
-                        className="absolute right-3 text-gray-400 hover:text-gray-600 transition-colors"
+                        className="absolute right-3.5 p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded transition-colors"
                         aria-label="Clear search"
                     >
-                        <X size={20} />
+                        <X size={18} />
                     </button>
                 )}
             </div>

@@ -63,8 +63,8 @@ const OrdersTab = () => {
             key={tab.key}
             onClick={() => handleFilterChange(tab.key)}
             className={`px-4 py-2 font-medium whitespace-nowrap border-b-2 transition-colors ${activeFilter === tab.key
-                ? 'border-blue-600 text-blue-600'
-                : 'border-transparent text-gray-600 hover:text-gray-900'
+              ? 'border-indigo-600 text-indigo-600'
+              : 'border-transparent text-gray-600 hover:text-gray-900'
               }`}
           >
             {tab.label}
@@ -76,7 +76,7 @@ const OrdersTab = () => {
       {loading && (
         <div className="flex justify-center items-center h-64">
           <div className="space-y-4 flex flex-col items-center">
-            <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+            <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
             <p className="text-gray-600">Loading orders...</p>
           </div>
         </div>
@@ -99,7 +99,7 @@ const OrdersTab = () => {
               <button
                 onClick={() => changePage(Math.max(1, pagination.page - 1))}
                 disabled={pagination.page === 1}
-                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="btn btn-secondary disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Previous
               </button>
@@ -108,8 +108,8 @@ const OrdersTab = () => {
                   key={page}
                   onClick={() => changePage(page)}
                   className={`px-3 py-2 rounded-lg ${pagination.page === page
-                      ? 'bg-blue-600 text-white'
-                      : 'border border-gray-300 hover:bg-gray-50'
+                    ? 'btn btn-primary'
+                    : 'border border-gray-300 hover:bg-gray-50'
                     }`}
                 >
                   {page}
@@ -118,7 +118,7 @@ const OrdersTab = () => {
               <button
                 onClick={() => changePage(Math.min(pagination.pages, pagination.page + 1))}
                 disabled={pagination.page === pagination.pages}
-                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="btn btn-secondary disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Next
               </button>
@@ -133,7 +133,7 @@ const OrdersTab = () => {
           <p className="text-gray-600 text-lg mb-4">{getEmptyMessage()}</p>
           <button
             onClick={() => navigate('/products')}
-            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            className="btn btn-primary"
           >
             Continue Shopping
           </button>

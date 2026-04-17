@@ -113,29 +113,31 @@ export default function ProductsPage() {
 
     return (
         <div className="min-h-screen bg-gray-50">
-            <Navbar showBackButton={true} title="Products" />
-            <div className="max-w-7xl mx-auto px-4 py-6">
-                {/* Header */}
-                <div className="flex flex-col gap-4 mb-6">
-                    <div>
-                        <h1 className="text-3xl font-bold text-gray-900">Products</h1>
-                        <p className="text-gray-600">Browse our collection of products</p>
+            <Navbar />
+            <div className="page-container py-10">
+                {/* Header Section */}
+                <div className="mb-10">
+                    <div className="mb-8">
+                        <h1 className="text-5xl font-bold text-gray-900 mb-2">Shop Products</h1>
+                        <p className="text-lg text-gray-600">Browse our curated collection</p>
                     </div>
 
                     {/* Search and Sort Bar */}
                     <div className="flex flex-col sm:flex-row gap-4 items-stretch sm:items-center">
-                        <SearchBar
-                            value={filters.search}
-                            onChange={(value) => updateFilters({ search: value })}
-                            onSearch={(value) => handleFilterChange('search', value)}
-                            placeholder="Search products..."
-                        />
+                        <div className="flex-1 min-w-0">
+                            <SearchBar
+                                value={filters.search}
+                                onChange={(value) => updateFilters({ search: value })}
+                                onSearch={(value) => handleFilterChange('search', value)}
+                                placeholder="Search products, brands, categories..."
+                            />
+                        </div>
 
                         {/* Sort Dropdown */}
                         <select
                             value={filters.sort}
                             onChange={(e) => handleSort(e.target.value)}
-                            className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                            className="input px-4 py-2.5 font-medium text-gray-700 bg-white"
                         >
                             <option value="newest">Newest</option>
                             <option value="price_asc">Price: Low to High</option>
@@ -147,30 +149,30 @@ export default function ProductsPage() {
                         {/* Filter Button (Mobile) */}
                         <button
                             onClick={() => setFilterPanelOpen(!filterPanelOpen)}
-                            className="lg:hidden flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors relative"
+                            className="lg:hidden btn btn-secondary relative"
                         >
-                            <Filter size={20} />
+                            <Filter size={18} />
                             <span>Filters</span>
                             {activeFilters.length > 0 && (
-                                <span className="absolute top-0 right-0 bg-primary text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                <span className="absolute -top-2 -right-2 bg-indigo-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center text-[10px]">
                                     {activeFilters.length}
                                 </span>
                             )}
                         </button>
                     </div>
 
-                    {/* Active Filters */}
+                    {/* Active Filters Display */}
                     {activeFilters.length > 0 && (
-                        <div className="flex flex-wrap gap-2">
+                        <div className="mt-6 flex flex-wrap gap-3 items-center pb-6 border-b border-gray-200">
                             {activeFilters.map((filter, index) => (
                                 <div
                                     key={index}
-                                    className="flex items-center gap-2 bg-primary text-white px-3 py-1 rounded-full text-sm"
+                                    className="inline-flex items-center gap-2 bg-indigo-100 text-indigo-700 px-4 py-2 rounded-full text-sm font-medium border border-indigo-200/60"
                                 >
                                     <span>{filter.label}</span>
                                     <button
                                         onClick={() => removeFilter(filter.type, filter.label)}
-                                        className="hover:bg-primary-dark rounded-full p-0.5"
+                                        className="ml-1 hover:text-indigo-900 transition-colors p-1 rounded-full hover:bg-indigo-200"
                                     >
                                         <X size={14} />
                                     </button>
@@ -181,7 +183,7 @@ export default function ProductsPage() {
                                     resetFilters();
                                     setSearchParams('');
                                 }}
-                                className="text-primary hover:underline text-sm font-semibold"
+                                className="text-indigo-600 hover:text-indigo-700 text-sm font-semibold hover:underline transition-colors"
                             >
                                 Clear all
                             </button>
@@ -190,16 +192,23 @@ export default function ProductsPage() {
                 </div>
 
                 {/* Main Content */}
-                <div className="flex gap-6">
+                <div className="flex gap-8">
                     {/* Sidebar - Desktop */}
-                    <div className="hidden lg:block w-64">
-                        <FilterSidebar
-                            filters={filters}
-                            onFilterChange={handleFilterChange}
-                            categories={categories}
-                            priceRange={priceRange}
-                            isOpen={true}
-                        />
+                    <div className="hidden lg:block w-72 flex-shrink-0">
+                        <div className="card sticky top-24">
+                            <div className="card-header">
+                                <h2 className="font-bold text-gray-900">Filters</h2>
+                            </div>
+                            <div className="card-body">
+                                <FilterSidebar
+                                    filters={filters}
+                                    onFilterChange={handleFilterChange}
+                                    categories={categories}
+                                    priceRange={priceRange}
+                                    isOpen={true}
+                                />
+                            </div>
+                        </div>
                     </div>
 
                     {/* Sidebar - Mobile */}
@@ -215,21 +224,34 @@ export default function ProductsPage() {
                     )}
 
                     {/* Products Section */}
-                    <div className="flex-1">
-                        {/* Results Count */}
-                        <div className="mb-4 text-sm text-gray-600">
-                            {!isLoading && products.length > 0 && (
-                                <>
-                                    Showing <span className="font-semibold">{products.length}</span> of{' '}
-                                    <span className="font-semibold">{pagination.totalProducts}</span> products
-                                </>
-                            )}
+                    <div className="flex-1 min-w-0">
+                        {/* Results Count - Enhanced Typography */}
+                        <div className="mb-8 flex items-center justify-between">
+                            <div>
+                                {!isLoading && products.length > 0 && (
+                                    <p className="text-base font-semibold text-gray-900">
+                                        Showing <span className="text-indigo-600">{products.length}</span> of <span className="text-indigo-600">{pagination.totalProducts}</span>
+                                        <span className="text-gray-600"> products</span>
+                                    </p>
+                                )}
+                                {!isLoading && products.length === 0 && !error && (
+                                    <p className="text-base text-gray-500">No products found</p>
+                                )}
+                            </div>
                         </div>
 
-                        {/* Error Message */}
+                        {/* Error Message - Modern Styling */}
                         {error && (
-                            <div className="mb-4 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg">
-                                {error}
+                            <div className="mb-8 p-4 bg-red-50 border-l-4 border-red-500 rounded-lg flex items-start gap-3 shadow-sm">
+                                <div className="flex-shrink-0 mt-0.5">
+                                    <svg className="h-5 w-5 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                                    </svg>
+                                </div>
+                                <div className="flex-1">
+                                    <p className="text-sm font-semibold text-red-800">Error loading products</p>
+                                    <p className="text-sm text-red-700 mt-1">{error}</p>
+                                </div>
                             </div>
                         )}
 
@@ -240,13 +262,15 @@ export default function ProductsPage() {
                             emptyMessage="No products found matching your criteria"
                         />
 
-                        {/* Pagination */}
+                        {/* Pagination - Modern Spacing */}
                         {!isLoading && products.length > 0 && pagination.totalPages > 1 && (
-                            <Pagination
-                                page={pagination.currentPage}
-                                pages={pagination.totalPages}
-                                onPageChange={handlePageChange}
-                            />
+                            <div className="mt-12 pt-8 border-t border-gray-200">
+                                <Pagination
+                                    page={pagination.currentPage}
+                                    pages={pagination.totalPages}
+                                    onPageChange={handlePageChange}
+                                />
+                            </div>
                         )}
                     </div>
                 </div>

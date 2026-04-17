@@ -110,12 +110,12 @@ const AdminOrdersPage = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Order Management</h1>
+          <h1 className="section-title">Order Management</h1>
           <p className="text-gray-600">Manage all customer orders</p>
         </div>
         <button
           onClick={handleExportCSV}
-          className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+          className="flex items-center gap-2 btn btn-primary"
         >
           <Download className="w-4 h-4" />
           Export CSV

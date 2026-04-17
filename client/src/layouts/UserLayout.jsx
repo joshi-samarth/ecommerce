@@ -16,7 +16,7 @@ const UserLayout = () => {
 
                     {/* Main Content Area */}
                     <div className="flex-1 min-w-0">
-                        <div className="bg-white rounded-lg shadow-md p-6">
+                        <div className="card p-6">
                             <Outlet />
                         </div>
                     </div>

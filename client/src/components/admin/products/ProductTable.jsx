@@ -23,7 +23,7 @@ export default function ProductTable({
                 <img
                     src={row.images?.[0] || 'https://via.placeholder.com/48?text=No+Image'}
                     alt={row.name}
-                    className="w-12 h-12 object-cover rounded"
+                    className="w-12 h-12 object-cover rounded-lg"
                 />
             ),
         },
@@ -41,7 +41,7 @@ export default function ProductTable({
             key: 'category',
             label: 'Category',
             render: (row) => (
-                <span className="text-sm px-2 py-1 bg-gray-100 text-gray-700 rounded">
+                <span className="badge badge-primary text-xs">
                     {row.category?.name || 'N/A'}
                 </span>
             ),
@@ -51,7 +51,7 @@ export default function ProductTable({
             label: 'Price',
             render: (row) => (
                 <div>
-                    <p className="font-semibold text-gray-900">₹{row.price}</p>
+                    <p className="font-bold text-indigo-600">₹{row.price}</p>
                     {row.comparePrice && (
                         <p className="text-xs text-gray-500 line-through">₹{row.comparePrice}</p>
                     )}
@@ -85,9 +85,9 @@ export default function ProductTable({
             render: (row) => (
                 <button
                     onClick={() => onToggleFeatured(row._id)}
-                    className={`p-2 rounded transition ${row.isFeatured
-                            ? 'bg-purple-100 text-purple-600 hover:bg-purple-200'
-                            : 'bg-gray-100 text-gray-400 hover:bg-gray-200'
+                    className={`p-2.5 rounded-lg transition-all ${row.isFeatured
+                        ? 'bg-amber-100 text-amber-600 hover:bg-amber-200'
+                        : 'bg-gray-100 text-gray-400 hover:bg-gray-200'
                         }`}
                     title={row.isFeatured ? 'Remove from featured' : 'Add to featured'}
                 >
@@ -108,14 +108,14 @@ export default function ProductTable({
                     </button>
 
                     {expandedRow === row._id && (
-                        <div className="absolute right-0 top-10 bg-white border border-gray-200 rounded-lg shadow-lg z-10 min-w-40">
+                        <div className="absolute right-0 top-10 bg-white border border-gray-200 rounded-xl shadow-xl z-10 min-w-44 overflow-hidden">
                             {/* Edit */}
                             <button
                                 onClick={() => {
                                     onEdit(row._id);
                                     setExpandedRow(null);
                                 }}
-                                className="w-full text-left px-4 py-2 hover:bg-gray-50 flex items-center gap-2 text-sm border-b"
+                                className="w-full text-left px-4 py-2.5 hover:bg-indigo-50 flex items-center gap-3 text-sm border-b border-gray-200 text-gray-700 hover:text-indigo-600 transition-colors"
                             >
                                 <Edit size={16} />
                                 Edit
@@ -127,15 +127,16 @@ export default function ProductTable({
                                     onToggleStatus(row._id);
                                     setExpandedRow(null);
                                 }}
-                                className="w-full text-left px-4 py-2 hover:bg-gray-50 flex items-center gap-2 text-sm border-b"
+                                className="w-full text-left px-4 py-2.5 hover:bg-emerald-50 flex items-center gap-3 text-sm border-b border-gray-200 text-gray-700 hover:text-emerald-600 transition-colors"
                             >
                                 {row.isActive ? <EyeOff size={16} /> : <Eye size={16} />}
                                 {row.isActive ? 'Unpublish' : 'Publish'}
                             </button>
 
                             {/* Update Stock */}
-                            <div className="px-4 py-2 border-b">
-                                <div className="flex gap-1">
+                            <div className="px-4 py-3 border-b border-gray-200 bg-gray-50">
+                                <label className="text-xs font-semibold text-gray-600 mb-2 block">Update Stock</label>
+                                <div className="flex gap-2">
                                     <input
                                         type="number"
                                         min="0"
@@ -146,7 +147,7 @@ export default function ProductTable({
                                                 [row._id]: e.target.value,
                                             }))
                                         }
-                                        className="w-20 px-2 py-1 border border-gray-300 rounded text-sm"
+                                        className="input flex-1 text-sm py-2"
                                     />
                                     <button
                                         onClick={() => {
@@ -158,7 +159,7 @@ export default function ProductTable({
                                             });
                                             setExpandedRow(null);
                                         }}
-                                        className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700"
+                                        className="btn btn-primary btn-sm text-xs px-3"
                                     >
                                         Save
                                     </button>
@@ -171,7 +172,7 @@ export default function ProductTable({
                                     onDelete(row._id);
                                     setExpandedRow(null);
                                 }}
-                                className="w-full text-left px-4 py-2 hover:bg-red-50 flex items-center gap-2 text-sm text-red-600"
+                                className="w-full text-left px-4 py-2.5 hover:bg-red-50 flex items-center gap-3 text-sm text-red-600 hover:text-red-700 transition-colors"
                             >
                                 <Trash2 size={16} />
                                 Delete

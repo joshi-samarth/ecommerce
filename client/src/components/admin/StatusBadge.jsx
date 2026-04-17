@@ -4,34 +4,34 @@ export default function StatusBadge({ status, type = 'product' }) {
             case 'product':
             case 'coupon':
                 if (status === 'active' || status === true) {
-                    return 'bg-green-100 text-green-800';
+                    return 'badge badge-success';
                 } else if (status === 'inactive' || status === false) {
-                    return 'bg-gray-100 text-gray-800';
+                    return 'badge badge-secondary';
                 }
                 break;
 
             case 'stock':
                 if (status === 'outofstock') {
-                    return 'bg-red-100 text-red-800';
+                    return 'badge badge-danger';
                 } else if (status === 'lowstock') {
-                    return 'bg-amber-100 text-amber-800';
+                    return 'badge badge-warning';
                 } else if (status === 'instock') {
-                    return 'bg-green-100 text-green-800';
+                    return 'badge badge-success';
                 }
                 break;
 
             case 'featured':
                 if (status === true) {
-                    return 'bg-purple-100 text-purple-800';
+                    return 'badge badge-primary text-sm';
                 } else {
-                    return 'bg-gray-100 text-gray-800';
+                    return 'badge badge-secondary';
                 }
 
             case 'expired':
-                return 'bg-red-100 text-red-800';
+                return 'badge badge-danger';
 
             default:
-                return 'bg-gray-100 text-gray-800';
+                return 'badge badge-secondary';
         }
     };
 
@@ -45,7 +45,7 @@ export default function StatusBadge({ status, type = 'product' }) {
                 if (status === 'lowstock') return 'Low Stock';
                 return 'In Stock';
             case 'featured':
-                return status === true ? '⭐ Featured' : 'Not Featured';
+                return status === true ? '★ Featured' : 'Not Featured';
             case 'expired':
                 return 'Expired';
             default:
@@ -54,7 +54,7 @@ export default function StatusBadge({ status, type = 'product' }) {
     };
 
     return (
-        <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${getStyles()}`}>
+        <span className={`inline-block font-semibold ${getStyles()}`}>
             {getLabel()}
         </span>
     );

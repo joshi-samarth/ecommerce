@@ -186,13 +186,13 @@ const AddressTab = () => {
         <div className="space-y-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <h2 className="text-3xl font-bold text-gray-800">My Addresses</h2>
+                    <h2 className="section-title">My Addresses</h2>
                     <p className="text-gray-600">Manage your delivery addresses</p>
                 </div>
                 {!showForm && (
                     <button
                         onClick={() => setShowForm(true)}
-                        className="px-4 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition"
+                        className="btn btn-primary"
                     >
                         ➕ Add New Address
                     </button>
@@ -201,7 +201,7 @@ const AddressTab = () => {
 
             {/* Success Message */}
             {success && (
-                <div className="bg-green-50 border border-green-200 text-green-700 p-4 rounded-lg">
+                <div className="bg-emerald-50 border border-emerald-200 text-emerald-700 p-4 rounded-lg">
                     {success}
                 </div>
             )}
@@ -215,7 +215,7 @@ const AddressTab = () => {
 
             {/* Add/Edit Address Form */}
             {showForm && (
-                <div className="bg-gray-50 border-2 border-green-200 rounded-lg p-6">
+                <div className="card p-6 border-2 border-indigo-200">
                     <h3 className="text-lg font-bold text-gray-800 mb-4">
                         {editingId ? '✏️ Edit Address' : '📍 Add New Address'}
                     </h3>
@@ -288,7 +288,7 @@ const AddressTab = () => {
                                 <label className="block text-sm font-semibold text-gray-700 mb-2">
                                     Country <span className="text-red-500 ml-1">*</span>
                                 </label>
-                                <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-700 font-semibold cursor-not-allowed">
+                                <div className="w-full px-4 py-2.5 border border-gray-300 rounded-lg bg-gray-50 text-gray-700 font-semibold cursor-not-allowed">
                                     🇮🇳 India
                                 </div>
                                 <p className="text-xs text-gray-500 mt-1">Country is fixed to India</p>
@@ -303,7 +303,7 @@ const AddressTab = () => {
                                 name="isDefault"
                                 checked={formData.isDefault}
                                 onChange={handleChange}
-                                className="w-4 h-4 text-green-600 rounded focus:ring-2 focus:ring-green-500"
+                                className="w-4 h-4 text-indigo-600 rounded focus:ring-2 focus:ring-indigo-500"
                             />
                             <label htmlFor="isDefault" className="text-gray-700 font-medium">
                                 Set as default delivery address
@@ -314,14 +314,14 @@ const AddressTab = () => {
                         <div className="flex gap-4 pt-4">
                             <button
                                 type="submit"
-                                className="px-4 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition"
+                                className="btn btn-primary"
                             >
                                 {editingId ? '✅ Update Address' : '✅ Add Address'}
                             </button>
                             <button
                                 type="button"
                                 onClick={resetForm}
-                                className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-400 transition"
+                                className="btn btn-secondary"
                             >
                                 ❌ Cancel
                             </button>

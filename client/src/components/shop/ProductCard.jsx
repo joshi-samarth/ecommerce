@@ -44,57 +44,64 @@ export default function ProductCard({ product }) {
     return (
         <div
             onClick={handleCardClick}
-            className="card hover:shadow-lg transition-all duration-300 overflow-hidden group cursor-pointer h-full flex flex-col"
+            className="card overflow-hidden group cursor-pointer h-full flex flex-col transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
         >
             {/* Image Container */}
-            <div className="relative overflow-hidden bg-gray-100 aspect-square">
+            <div className="relative overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 aspect-square">
                 <img
                     src={image}
                     alt={product.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
                 />
 
                 {/* Top Overlay: Category Badge */}
                 {product.category && (
-                    <div className="absolute top-3 left-3 badge badge-primary shadow-sm">
+                    <div className="absolute top-4 left-4 badge badge-primary shadow-md backdrop-blur-sm bg-white/90">
                         {product.category.name}
                     </div>
                 )}
 
                 {/* Top Right: Wishlist Button */}
-                <div className="absolute top-3 right-3">
+                <div className="absolute top-4 right-4">
                     <WishlistButton productId={product._id} size="sm" />
                 </div>
 
                 {/* Discount Badge */}
                 {discountPercent > 0 && (
-                    <div className="absolute bottom-3 right-3 badge badge-success">
+                    <div className="absolute bottom-4 right-4 bg-gradient-to-r from-red-500 to-red-600 text-white px-3 py-1.5 rounded-lg font-bold text-sm shadow-lg">
                         -{discountPercent}%
                     </div>
                 )}
 
                 {/* Out of Stock Overlay */}
                 {isOutOfStock && (
-                    <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+                    <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center">
                         <span className="text-white font-bold text-lg">Out of Stock</span>
+                    </div>
+                )}
+
+                {/* Featured Badge */}
+                {product.isFeatured && (
+                    <div className="absolute top-4 right-16 bg-gradient-to-r from-amber-400 to-amber-500 text-white px-2.5 py-1 rounded-full text-xs font-bold shadow-md">
+                        ⭐ Featured
                     </div>
                 )}
             </div>
 
             {/* Content */}
-            <div className="card-body flex flex-col flex-grow">
+            <div className="card-body flex flex-col flex-grow gap-3">
                 {/* Product Name */}
-                <h3 className="font-medium text-gray-900 line-clamp-2 mb-2 text-sm">
+                <h3 className="font-semibold text-gray-900 line-clamp-2 text-base leading-snug">
                     {product.name}
                 </h3>
 
                 {/* Rating */}
-                <div className="mb-3">
+                <div className="py-1">
                     <RatingStars rating={product.averageRating} numReviews={product.numReviews} size="sm" />
                 </div>
 
-                {/* Price */}
-                <div className="mb-4 mt-auto">
+                {/* Price - More prominent */}
+                <div className="mt-auto pt-2 border-t border-gray-100">
                     <PriceDisplay
                         price={product.price}
                         comparePrice={product.comparePrice}
@@ -106,9 +113,9 @@ export default function ProductCard({ product }) {
                 <button
                     onClick={handleAddToCart}
                     disabled={isOutOfStock}
-                    className={`btn btn-sm w-full flex items-center justify-center gap-2 ${isOutOfStock
-                            ? 'btn-secondary opacity-50 cursor-not-allowed'
-                            : 'btn-primary'
+                    className={`btn btn-sm w-full flex items-center justify-center gap-2 font-600 mt-3 transition-all ${isOutOfStock
+                        ? 'btn-secondary opacity-50 cursor-not-allowed'
+                        : 'btn-primary hover:shadow-lg'
                         }`}
                 >
                     <ShoppingCart size={16} />
