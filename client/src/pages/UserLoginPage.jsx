@@ -31,11 +31,6 @@ const UserLoginPage = () => {
         setLoading(false);
     };
 
-    const fillDemoUser = () => {
-        setEmail('user@example.com');
-        setPassword('password123');
-    };
-
     return (
         <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-12">
             <div className="w-full max-w-md">
@@ -110,15 +105,6 @@ const UserLoginPage = () => {
                                 Sign up here
                             </Link>
                         </p>
-
-                        {/* Demo Button */}
-                        <button
-                            type="button"
-                            onClick={fillDemoUser}
-                            className="btn btn-secondary w-full text-sm"
-                        >
-                            📌 Fill Demo Credentials
-                        </button>
 
                         {/* Admin Login Link */}
                         <Link
