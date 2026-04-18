@@ -92,7 +92,26 @@ export function useProducts(initialFilters = {}) {
         fetchProducts();
     }, [filters, fetchProducts]);
 
-    // Update filters
+    // Update filter - resets to page 1 when filters change
+    const updateFilter = useCallback((key, value) => {
+        setFilters((prev) => ({
+            ...prev,
+            [key]: value,
+            page: 1, // Reset to first page when filter changes
+        }));
+    }, []);
+
+    // Change page - ONLY changes page, doesn't reset it
+    const changePage = useCallback((newPage) => {
+        setFilters((prev) => ({
+            ...prev,
+            page: newPage,
+        }));
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, []);
+
+    // Legacy updateFilters for backward compatibility
     const updateFilters = useCallback((newFilters) => {
         setFilters((prev) => ({
             ...prev,
@@ -103,33 +122,29 @@ export function useProducts(initialFilters = {}) {
 
     // Search handler
     const handleSearch = useCallback((searchTerm) => {
-        updateFilters({ search: searchTerm });
-    }, [updateFilters]);
+        updateFilter('search', searchTerm);
+    }, [updateFilter]);
 
     // Category filter handler
     const handleCategoryChange = useCallback((category) => {
-        updateFilters({ category });
-    }, [updateFilters]);
+        updateFilter('category', category);
+    }, [updateFilter]);
 
     // Price filter handler
     const handlePriceChange = useCallback((priceFilters) => {
-        updateFilters({
-            minPrice: priceFilters.min,
-            maxPrice: priceFilters.max,
-        });
-    }, [updateFilters]);
+        updateFilter('minPrice', priceFilters.min);
+        updateFilter('maxPrice', priceFilters.max);
+    }, [updateFilter]);
 
     // Sort handler
     const handleSort = useCallback((sort) => {
-        updateFilters({ sort });
-    }, [updateFilters]);
+        updateFilter('sort', sort);
+    }, [updateFilter]);
 
     // Page change handler
     const handlePageChange = useCallback((page) => {
-        updateFilters({ page });
-        // Scroll to top
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, [updateFilters]);
+        changePage(page);
+    }, [changePage]);
 
     // Reset filters
     const resetFilters = useCallback(() => {
@@ -159,5 +174,7 @@ export function useProducts(initialFilters = {}) {
         handlePageChange,
         resetFilters,
         updateFilters,
+        updateFilter,
+        changePage,
     };
 }

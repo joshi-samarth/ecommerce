@@ -38,6 +38,8 @@ export default function ProductsPage() {
         resetFilters,
         filters,
         updateFilters,
+        updateFilter,
+        changePage,
     } = useProducts(initialFilters);
 
     // Fetch categories and price range
@@ -70,10 +72,13 @@ export default function ProductsPage() {
         if (filters.category) params.append('category', filters.category);
         if (filters.minPrice) params.append('minPrice', filters.minPrice);
         if (filters.maxPrice) params.append('maxPrice', filters.maxPrice);
-        if (filters.sort !== 'newest') params.append('sort', filters.sort);
+        if (filters.sort) params.append('sort', filters.sort);
+        if (filters.minRating) params.append('minRating', filters.minRating);
+        if (filters.minDiscount) params.append('minDiscount', filters.minDiscount);
+        if (filters.inStock) params.append('inStock', filters.inStock);
         if (filters.page > 1) params.append('page', filters.page);
 
-        setSearchParams(params);
+        setSearchParams(params, { replace: true });
     }, [filters, setSearchParams]);
 
     const handleFilterChange = (key, value) => {
@@ -94,10 +99,13 @@ export default function ProductsPage() {
 
     // Active filters for display
     const activeFilters = [];
-    if (filters.search) activeFilters.push({ type: 'search', label: filters.search });
-    if (filters.category) activeFilters.push({ type: 'category', label: filters.category });
+    if (filters.search) activeFilters.push({ type: 'search', label: `"${filters.search}"` });
+    if (filters.category) activeFilters.push({ type: 'category', label: `Category: ${filters.category}` });
     if (filters.minPrice) activeFilters.push({ type: 'minPrice', label: `Min: ₹${filters.minPrice}` });
     if (filters.maxPrice) activeFilters.push({ type: 'maxPrice', label: `Max: ₹${filters.maxPrice}` });
+    if (filters.minRating) activeFilters.push({ type: 'minRating', label: `${filters.minRating}★ & up` });
+    if (filters.minDiscount) activeFilters.push({ type: 'minDiscount', label: `${filters.minDiscount}% off` });
+    if (filters.inStock === 'true') activeFilters.push({ type: 'inStock', label: 'In Stock' });
 
     const removeFilter = (type, value) => {
         if (type === 'search') {
@@ -108,6 +116,12 @@ export default function ProductsPage() {
             handleFilterChange('minPrice', '');
         } else if (type === 'maxPrice') {
             handleFilterChange('maxPrice', '');
+        } else if (type === 'minRating') {
+            handleFilterChange('minRating', '');
+        } else if (type === 'minDiscount') {
+            handleFilterChange('minDiscount', '');
+        } else if (type === 'inStock') {
+            handleFilterChange('inStock', '');
         }
     };
 
@@ -139,10 +153,11 @@ export default function ProductsPage() {
                             onChange={(e) => handleSort(e.target.value)}
                             className="input px-4 py-2.5 font-medium text-gray-700 bg-white"
                         >
+                            <option value="">Relevance</option>
                             <option value="newest">Newest</option>
+                            <option value="popular">Popularity</option>
                             <option value="price_asc">Price: Low to High</option>
                             <option value="price_desc">Price: High to Low</option>
-                            <option value="popular">Most Popular</option>
                             <option value="rating">Highest Rated</option>
                         </select>
 
@@ -204,7 +219,7 @@ export default function ProductsPage() {
                                     filters={filters}
                                     onFilterChange={handleFilterChange}
                                     categories={categories}
-                                    priceRange={priceRange}
+                                    priceRange={{ min: priceRange.minPrice || 0, max: priceRange.maxPrice || 10000 }}
                                     isOpen={true}
                                 />
                             </div>
@@ -217,7 +232,7 @@ export default function ProductsPage() {
                             filters={filters}
                             onFilterChange={handleFilterChange}
                             categories={categories}
-                            priceRange={priceRange}
+                            priceRange={{ min: priceRange.minPrice || 0, max: priceRange.maxPrice || 10000 }}
                             isOpen={filterPanelOpen}
                             onClose={() => setFilterPanelOpen(false)}
                         />
@@ -268,7 +283,7 @@ export default function ProductsPage() {
                                 <Pagination
                                     page={pagination.currentPage}
                                     pages={pagination.totalPages}
-                                    onPageChange={handlePageChange}
+                                    onPageChange={changePage}
                                 />
                             </div>
                         )}

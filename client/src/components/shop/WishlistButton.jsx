@@ -17,7 +17,10 @@ export default function WishlistButton({ productId, size = 'md' }) {
         lg: 'w-10 h-10',
     };
 
-    const handleClick = async () => {
+    const handleClick = async (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+
         if (!user) {
             toast.error('Login to save items');
             navigate('/login');

@@ -6,7 +6,7 @@ const Category = require('../models/Category');
 // @access  Public
 exports.getAllProducts = async (req, res) => {
     try {
-        const { search, category, minPrice, maxPrice, sort, page = 1, limit = 12 } = req.query;
+        const { search, category, minPrice, maxPrice, sort, page = 1, limit = 12, inStock, minRating, featured, minDiscount } = req.query;
 
         // Build filter object
         const filter = { isActive: true };
@@ -20,13 +20,33 @@ exports.getAllProducts = async (req, res) => {
             ];
         }
 
-        // Category filter
+        // Category filter - supports both slug and MongoDB _id
         if (category) {
-            const categoryDoc = await Category.findOne({ slug: category });
-            if (categoryDoc) {
-                filter.category = categoryDoc._id;
+            const mongoose = require('mongoose');
+            const catValue = category.split(',')[0].trim();
+            let foundCat = null;
+
+            if (mongoose.Types.ObjectId.isValid(catValue)) {
+                foundCat = await Category.findById(catValue);
             } else {
-                return res.status(404).json({ success: false, message: 'Category not found' });
+                foundCat = await Category.findOne({ slug: catValue });
+            }
+
+            if (foundCat) {
+                filter.category = foundCat._id;
+            } else {
+                // Category not found - return empty result
+                return res.status(200).json({
+                    success: true,
+                    data: [],
+                    pagination: {
+                        totalProducts: 0,
+                        totalPages: 0,
+                        currentPage: 1,
+                        productsPerPage: limit,
+                    },
+                    priceRange: { minPrice: 0, maxPrice: 0 },
+                });
             }
         }
 
@@ -41,30 +61,64 @@ exports.getAllProducts = async (req, res) => {
             }
         }
 
-        // Sorting
-        let sortObj = {};
-        if (sort) {
-            switch (sort) {
-                case 'price-asc':
-                    sortObj = { price: 1 };
-                    break;
-                case 'price-desc':
-                    sortObj = { price: -1 };
-                    break;
-                case 'rating':
-                    sortObj = { averageRating: -1 };
-                    break;
-                case 'newest':
-                    sortObj = { createdAt: -1 };
-                    break;
-                case 'sold':
-                    sortObj = { sold: -1 };
-                    break;
-                default:
-                    sortObj = { createdAt: -1 };
+        // inStock filter
+        if (inStock === 'true') {
+            filter.stock = { $gt: 0 };
+        }
+
+        // minRating filter
+        if (minRating) {
+            const minRatingValue = parseFloat(minRating);
+            if (!isNaN(minRatingValue) && minRatingValue > 0) {
+                filter.averageRating = { $gte: minRatingValue };
             }
-        } else {
-            sortObj = { createdAt: -1 };
+        }
+
+        // featured filter
+        if (featured === 'true') {
+            filter.isFeatured = true;
+        }
+
+        // discount filter
+        if (minDiscount) {
+            const minDiscountValue = parseFloat(minDiscount);
+            if (!isNaN(minDiscountValue) && minDiscountValue > 0) {
+                // Products where discount % >= minDiscount
+                // discount% = ((comparePrice - price) / comparePrice) * 100
+                filter.$expr = {
+                    $gte: [
+                        {
+                            $multiply: [
+                                {
+                                    $divide: [
+                                        { $subtract: ['$comparePrice', '$price'] },
+                                        '$comparePrice'
+                                    ]
+                                },
+                                100
+                            ]
+                        },
+                        minDiscountValue
+                    ]
+                };
+            }
+        }
+
+        // Sorting - handles both underscore and hyphen formats
+        let sortObj = { createdAt: -1 };
+        if (sort) {
+            const s = sort.toLowerCase().replace('_', '-');
+            if (s === 'price-asc' || s === 'price_asc') {
+                sortObj = { price: 1 };
+            } else if (s === 'price-desc' || s === 'price_desc') {
+                sortObj = { price: -1 };
+            } else if (s === 'popular' || s === 'sold') {
+                sortObj = { sold: -1 };
+            } else if (s === 'newest' || s === 'new') {
+                sortObj = { createdAt: -1 };
+            } else if (s === 'rating') {
+                sortObj = { averageRating: -1 };
+            }
         }
 
         // Pagination

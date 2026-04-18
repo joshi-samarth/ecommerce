@@ -20,7 +20,7 @@ const CheckoutPage = () => {
   useEffect(() => {
     if (cart.items.length === 0) {
       toast.error('Your cart is empty')
-      navigate('/cart')
+      navigate('/products')
     }
   }, [cart.items.length, navigate])
 
@@ -65,11 +65,11 @@ const CheckoutPage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Back Button */}
           <button
-            onClick={() => navigate('/cart')}
+            onClick={() => navigate('/products')}
             className="flex items-center gap-2 text-indigo-600 hover:text-indigo-700 mb-6 font-medium"
           >
             <ChevronLeft className="w-5 h-5" />
-            Back to Cart
+            Back to Shopping
           </button>
 
           {/* Header */}
@@ -93,10 +93,10 @@ const CheckoutPage = () => {
                 />
                 <div className="mt-8 flex gap-4">
                   <button
-                    onClick={() => navigate('/cart')}
+                    onClick={() => navigate('/products')}
                     className="btn btn-secondary"
                   >
-                    Back to Cart
+                    Continue Shopping
                   </button>
                   <button
                     onClick={handleContinueAddress}

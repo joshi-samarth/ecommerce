@@ -11,7 +11,6 @@ export default function FilterSidebar({
 }) {
     const [localMinPrice, setLocalMinPrice] = useState(filters.minPrice || priceRange.min);
     const [localMaxPrice, setLocalMaxPrice] = useState(filters.maxPrice || priceRange.max);
-    const [selectedRating, setSelectedRating] = useState(filters.minRating || 0);
 
     useEffect(() => {
         setLocalMinPrice(filters.minPrice || priceRange.min);
@@ -19,12 +18,9 @@ export default function FilterSidebar({
     }, [filters, priceRange]);
 
     const handleCategoryChange = (categorySlug) => {
-        const selectedCategories = (filters.category || '').split(',').filter(Boolean);
-        const newCategories = selectedCategories.includes(categorySlug)
-            ? selectedCategories.filter((c) => c !== categorySlug)
-            : [...selectedCategories, categorySlug];
-
-        onFilterChange('category', newCategories.join(','));
+        // Single-select radio behavior: if clicked category equals current, deselect; otherwise select it
+        const newCategory = filters.category === categorySlug ? '' : categorySlug;
+        onFilterChange('category', newCategory);
     };
 
     const handlePriceRangeChange = () => {
@@ -37,18 +33,25 @@ export default function FilterSidebar({
     };
 
     const handleRatingChange = (rating) => {
-        setSelectedRating(rating);
-        onFilterChange('minRating', rating);
+        // Toggle behavior: if already selected, clear it
+        const newRating = Number(filters.minRating) === rating ? '' : rating;
+        onFilterChange('minRating', newRating);
+    };
+
+    const handleDiscountChange = (discount) => {
+        // Toggle behavior: if already selected, clear it
+        const newDiscount = Number(filters.minDiscount) === discount ? '' : discount;
+        onFilterChange('minDiscount', newDiscount);
     };
 
     const handleClearAllFilters = () => {
         setLocalMinPrice(priceRange.min);
         setLocalMaxPrice(priceRange.max);
-        setSelectedRating(0);
         onFilterChange('clearAll', true);
     };
 
-    const selectedCategories = (filters.category || '').split(',').filter(Boolean);
+    // Single category selection with radio behavior
+    const selectedCategory = filters.category || '';
 
     const desktopClass = 'hidden lg:block w-64 pr-6 border-r border-gray-200';
     const mobileClass = isOpen
@@ -85,13 +88,27 @@ export default function FilterSidebar({
                     <div className="mb-8 pb-8 border-b border-gray-200">
                         <h3 className="text-sm font-bold text-gray-900 mb-4 uppercase tracking-widest">Categories</h3>
                         <div className="space-y-3">
+                            {/* All Categories - Radio Option */}
+                            <label className="flex items-center gap-3 cursor-pointer group">
+                                <input
+                                    type="radio"
+                                    name="category-filter"
+                                    checked={selectedCategory === ''}
+                                    onChange={() => handleCategoryChange('')}
+                                    className="w-4 h-4 rounded-full border-gray-300 text-indigo-600 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1 cursor-pointer transition-all"
+                                />
+                                <span className="text-sm font-medium text-gray-700 flex-1 group-hover:text-gray-900 transition-all">All Categories</span>
+                            </label>
+
+                            {/* Individual Categories - Radio Options */}
                             {categories.map((cat) => (
                                 <label key={cat._id} className="flex items-center gap-3 cursor-pointer group">
                                     <input
-                                        type="checkbox"
-                                        checked={selectedCategories.includes(cat.slug)}
+                                        type="radio"
+                                        name="category-filter"
+                                        checked={selectedCategory === cat.slug}
                                         onChange={() => handleCategoryChange(cat.slug)}
-                                        className="w-4 h-4 rounded border-gray-300 text-indigo-600 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1 cursor-pointer transition-all"
+                                        className="w-4 h-4 rounded-full border-gray-300 text-indigo-600 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1 cursor-pointer transition-all"
                                     />
                                     <span className="text-sm text-gray-700 flex-1 group-hover:text-gray-900 group-hover:font-medium transition-all">{cat.name}</span>
                                     <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded group-hover:bg-indigo-50 transition-colors">({cat.productCount})</span>
@@ -155,20 +172,45 @@ export default function FilterSidebar({
                     </div>
 
                     {/* Rating */}
-                    <div className="mb-6">
+                    <div className="mb-8 pb-8 border-b border-gray-200">
                         <h3 className="text-sm font-bold text-gray-900 mb-4 uppercase tracking-widest">Rating</h3>
                         <div className="space-y-3">
-                            {[4, 3, 2, 1].map((rating) => (
-                                <button
-                                    key={rating}
-                                    onClick={() => handleRatingChange(rating)}
-                                    className={`w-full text-left px-4 py-3 rounded-lg text-sm font-semibold transition-all duration-300 ${selectedRating === rating
-                                        ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-lg shadow-indigo-200 scale-105'
-                                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:shadow-md'
-                                        }`}
-                                >
-                                    <span className="text-lg">★</span> {rating} & Up
-                                </button>
+                            {[4, 3, 2].map((rating) => (
+                                <label key={rating} className="flex items-center gap-3 cursor-pointer group">
+                                    <input
+                                        type="radio"
+                                        name="minRating"
+                                        value={rating}
+                                        checked={Number(filters.minRating) === rating}
+                                        onChange={() => handleRatingChange(rating)}
+                                        className="w-4 h-4 rounded-full border-gray-300 text-indigo-600 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1 cursor-pointer transition-all"
+                                    />
+                                    <span className="text-sm text-gray-700 flex-1 group-hover:text-gray-900 transition-all">
+                                        <span className="text-lg">★</span> {rating}★ & above
+                                    </span>
+                                </label>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Discount */}
+                    <div className="mb-8 pb-8 border-b border-gray-200">
+                        <h3 className="text-sm font-bold text-gray-900 mb-4 uppercase tracking-widest">Discount</h3>
+                        <div className="space-y-3">
+                            {[10, 20, 30, 40, 50].map((discount) => (
+                                <label key={discount} className="flex items-center gap-3 cursor-pointer group">
+                                    <input
+                                        type="radio"
+                                        name="minDiscount"
+                                        value={discount}
+                                        checked={Number(filters.minDiscount) === discount}
+                                        onChange={() => handleDiscountChange(discount)}
+                                        className="w-4 h-4 rounded-full border-gray-300 text-indigo-600 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1 cursor-pointer transition-all"
+                                    />
+                                    <span className="text-sm text-gray-700 flex-1 group-hover:text-gray-900 transition-all">
+                                        {discount}% or more
+                                    </span>
+                                </label>
                             ))}
                         </div>
                     </div>
