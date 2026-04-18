@@ -22,14 +22,6 @@ const getAllOrders = async (req, res) => {
       filter.paymentStatus = payment
     }
 
-    // Search by order number or email
-    if (search) {
-      filter.$or = [
-        { orderNumber: new RegExp(search, 'i') },
-        /* User email search requires population, handled separately */
-      ]
-    }
-
     // Date range filter
     if (dateFrom || dateTo) {
       filter.createdAt = {}
@@ -41,23 +33,38 @@ const getAllOrders = async (req, res) => {
       }
     }
 
+    // Search by order number, email, or customer name
+    if (search) {
+      const searchRegex = new RegExp(search.trim(), 'i')
+      // Get user IDs matching the search
+      const matchingUsers = await User.find({
+        $or: [
+          { name: searchRegex },
+          { email: searchRegex }
+        ]
+      }).select('_id')
+
+      const userIds = matchingUsers.map(u => u._id)
+
+      filter.$or = [
+        { orderNumber: searchRegex },
+        { user: { $in: userIds } }
+      ]
+    }
+
+    // Get total count for pagination AFTER applying all filters
+    const total = await Order.countDocuments(filter)
+
     let query = Order.find(filter)
       .populate('user', 'name email')
       .populate('items.product', 'name')
       .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit))
 
-    // If searching, do additional filtering for email
-    let orders = await query.skip(skip).limit(parseInt(limit))
+    const orders = await query
 
-    if (search) {
-      orders = orders.filter(order =>
-        order.user.email.toLowerCase().includes(search.toLowerCase())
-      )
-    }
-
-    const total = await Order.countDocuments(filter)
-
-    // Calculate summary
+    // Get all orders for summary (without pagination)
     const allOrders = await Order.find(filter)
     const summary = {
       placed: allOrders.filter(o => o.orderStatus === 'placed').length,

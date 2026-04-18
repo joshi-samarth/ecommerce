@@ -50,7 +50,7 @@ export default function ProductDetailPage() {
                         );
                         if (relatedRes.data.success) {
                             setRelatedProducts(
-                                relatedRes.data.data.products.filter((p) => p._id !== productData._id)
+                                relatedRes.data.data.filter((p) => p._id !== productData._id)
                             );
                         }
                     }
@@ -298,24 +298,6 @@ export default function ProductDetailPage() {
                                 </button>
                             </div>
 
-                            {/* Available On - Platforms */}
-                            <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-xl p-6 border border-purple-200">
-                                <div className="flex items-center gap-2 mb-4">
-                                    <Tag className="w-5 h-5 text-purple-600" />
-                                    <h3 className="font-bold text-lg text-gray-900">Also Available On</h3>
-                                </div>
-                                <div className="flex gap-4 flex-wrap">
-                                    <a href="#" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 bg-white px-4 py-2 rounded-lg border border-purple-200 hover:shadow-md transition-all hover:border-purple-400">
-                                        <img src="https://img.icons8.com/color/48/000000/flipkart.png" alt="Flipkart" className="w-6 h-6" />
-                                        <span className="font-semibold text-gray-800">Flipkart</span>
-                                    </a>
-                                    <a href="#" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 bg-white px-4 py-2 rounded-lg border border-blue-200 hover:shadow-md transition-all hover:border-blue-400">
-                                        <img src="https://img.icons8.com/color/48/000000/amazon.png" alt="Amazon" className="w-6 h-6" />
-                                        <span className="font-semibold text-gray-800">Amazon</span>
-                                    </a>
-                                </div>
-                            </div>
-
                             {/* Product Meta - Modern */}
                             <div className="border-t border-gray-200 pt-6 space-y-4">
                                 <div className="flex justify-between items-center">
@@ -408,8 +390,14 @@ export default function ProductDetailPage() {
                             <div className="border-b border-gray-200 pb-4">
                                 <p className="text-sm text-gray-600 font-semibold uppercase mb-1">Discount</p>
                                 <div className="flex items-center gap-2">
-                                    <span className="text-2xl font-bold text-green-600">{product.discount || 0}%</span>
-                                    <span className="text-gray-500 line-through">₹{product.comparePrice?.toLocaleString('en-IN')}</span>
+                                    <span className="text-2xl font-bold text-green-600">
+                                        {product.comparePrice && product.comparePrice > product.price
+                                            ? Math.round(((product.comparePrice - product.price) / product.comparePrice) * 100)
+                                            : 0}%
+                                    </span>
+                                    {product.comparePrice && (
+                                        <span className="text-gray-500 line-through">₹{product.comparePrice?.toLocaleString('en-IN')}</span>
+                                    )}
                                 </div>
                             </div>
                             <div className="border-b border-gray-200 pb-4">

@@ -70,6 +70,9 @@ export function useProducts(initialFilters = {}) {
             if (filters.category) params.append('category', filters.category);
             if (filters.minPrice) params.append('minPrice', filters.minPrice);
             if (filters.maxPrice) params.append('maxPrice', filters.maxPrice);
+            if (filters.minRating) params.append('minRating', filters.minRating);
+            if (filters.minDiscount) params.append('minDiscount', filters.minDiscount);
+            if (filters.inStock) params.append('inStock', filters.inStock);
             if (filters.sort) params.append('sort', filters.sort);
             params.append('page', filters.page);
             params.append('limit', filters.limit);
