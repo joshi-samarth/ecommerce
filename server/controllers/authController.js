@@ -228,7 +228,7 @@ const loginUser = async (req, res) => {
         if (user.role === 'admin') {
             return res.status(400).json({
                 success: false,
-                message: 'Admins must use /api/auth/admin/login for secure OTP-based authentication'
+                message: 'admin'
             });
         }
 

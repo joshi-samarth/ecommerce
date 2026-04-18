@@ -24,8 +24,14 @@ export default function SearchBar({
             clearTimeout(debounceTimer.current);
         }
 
+        // Only search if more than 1 character, otherwise clear the search
         debounceTimer.current = setTimeout(() => {
-            onSearch(newValue);
+            if (newValue.length > 1) {
+                onSearch(newValue);
+            } else if (newValue.length === 0) {
+                onSearch(''); // Allow clearing
+            }
+            // Ignore single character searches
         }, 400);
     };
 
@@ -40,7 +46,13 @@ export default function SearchBar({
             if (debounceTimer.current) {
                 clearTimeout(debounceTimer.current);
             }
-            onSearch(inputValue);
+            // Only search if more than 1 character
+            if (inputValue.length > 1) {
+                onSearch(inputValue);
+            } else if (inputValue.length === 0) {
+                onSearch(''); // Allow clearing
+            }
+            // Ignore single character searches
         }
     };
 

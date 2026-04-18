@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import api from '../../api/axios';
 import StatCard from '../../components/admin/StatCard';
 import { TrendingUp } from 'lucide-react';
-import { Users, Shield, Package, ShoppingCart, DollarSign, Activity } from 'lucide-react';
+import { Users, Shield, Package, ShoppingCart, DollarSign, Activity, Clock } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const AdminDashboardPage = () => {
     const [stats, setStats] = useState(null);
+    const [recentOrders, setRecentOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
@@ -23,7 +25,20 @@ const AdminDashboardPage = () => {
             }
         };
 
+        const fetchRecentOrders = async () => {
+            try {
+                const response = await api.get('/api/admin/orders?limit=5&sort=-createdAt');
+                if (response.data.success) {
+                    setRecentOrders(response.data.data || []);
+                }
+            } catch (err) {
+                console.error('Failed to fetch recent orders:', err);
+                setRecentOrders([]);
+            }
+        };
+
         fetchStats();
+        fetchRecentOrders();
     }, []);
 
     if (loading) {
@@ -113,14 +128,65 @@ const AdminDashboardPage = () => {
                 </div>
             </div>
 
-            {/* Quick Actions / Recent Activity Placeholder */}
+            {/* Recent Orders Section - Module 7 Implementation */}
             <div className="space-y-4">
-                <h2 className="section-title">Recent Activity</h2>
-                <div className="card p-12 text-center">
-                    <Activity size={48} className="mx-auto text-gray-400 mb-4" />
-                    <p className="text-gray-600 font-medium mb-2">Recent Orders section</p>
-                    <p className="text-gray-500 text-sm">Coming in Module 7 (Orders Management)</p>
-                </div>
+                <h2 className="section-title">Recent Orders</h2>
+                {recentOrders.length > 0 ? (
+                    <div className="card overflow-hidden">
+                        <table className="w-full">
+                            <thead>
+                                <tr className="border-b bg-gray-50">
+                                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Order #</th>
+                                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Customer</th>
+                                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Amount</th>
+                                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Status</th>
+                                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Date</th>
+                                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {recentOrders.map((order) => (
+                                    <tr key={order._id} className="border-b hover:bg-gray-50 transition">
+                                        <td className="px-6 py-4 text-sm font-semibold text-gray-900">#{order.orderNumber}</td>
+                                        <td className="px-6 py-4 text-sm text-gray-600 max-w-xs truncate">{order.userId?.name || 'N/A'}</td>
+                                        <td className="px-6 py-4 text-sm font-semibold text-gray-900">₹{order.total?.toLocaleString('en-IN')}</td>
+                                        <td className="px-6 py-4 text-sm">
+                                            <span className={`px-3 py-1 rounded-full text-xs font-semibold capitalize ${order.orderStatus === 'delivered' ? 'bg-green-100 text-green-800' :
+                                                    order.orderStatus === 'shipped' ? 'bg-blue-100 text-blue-800' :
+                                                        order.orderStatus === 'processing' ? 'bg-yellow-100 text-yellow-800' :
+                                                            order.orderStatus === 'cancelled' ? 'bg-red-100 text-red-800' :
+                                                                'bg-gray-100 text-gray-800'
+                                                }`}>
+                                                {order.orderStatus}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4 text-sm text-gray-600 flex items-center gap-2">
+                                            <Clock className="w-4 h-4 text-gray-400" />
+                                            {new Date(order.createdAt).toLocaleDateString('en-IN')}
+                                        </td>
+                                        <td className="px-6 py-4 text-sm">
+                                            <Link
+                                                to={`/admin/orders/${order._id}`}
+                                                className="text-indigo-600 hover:text-indigo-700 font-medium transition"
+                                            >
+                                                View →
+                                            </Link>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                ) : (
+                    <div className="card p-12 text-center">
+                        <Activity size={48} className="mx-auto text-gray-400 mb-4" />
+                        <p className="text-gray-600 font-medium mb-2">No recent orders</p>
+                        <p className="text-gray-500 text-sm">Orders will appear here as customers place them</p>
+                    </div>
+                )}
+                <Link to="/admin/orders" className="inline-block text-indigo-600 hover:text-indigo-700 font-semibold text-sm">
+                    View All Orders →
+                </Link>
             </div>
         </div>
     );

@@ -17,6 +17,7 @@ const AddressStep = ({ selectedAddress, onSelect, onContinue }) => {
     pincode: ''
   })
   const [submitting, setSubmitting] = useState(false)
+  const [formErrors, setFormErrors] = useState({})
 
   const fetchAddresses = async () => {
     try {
@@ -42,6 +43,14 @@ const AddressStep = ({ selectedAddress, onSelect, onContinue }) => {
 
   const handleAddAddress = async (e) => {
     e.preventDefault()
+
+    // Validate form
+    const errors = validateForm()
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors)
+      return
+    }
+
     try {
       setSubmitting(true)
       const response = await axios.post('/api/user/addresses', formData)
@@ -58,6 +67,7 @@ const AddressStep = ({ selectedAddress, onSelect, onContinue }) => {
           state: '',
           pincode: ''
         })
+        setFormErrors({})
         setShowForm(false)
       }
     } catch (error) {
@@ -69,7 +79,44 @@ const AddressStep = ({ selectedAddress, onSelect, onContinue }) => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
-    setFormData(prev => ({ ...prev, [name]: value }))
+
+    // Input restrictions and validation
+    let finalValue = value
+
+    if (name === 'phone') {
+      // Allow only digits, max 10
+      finalValue = value.replace(/\D/g, '').slice(0, 10)
+    } else if (name === 'pincode') {
+      // Allow only digits, max 6
+      finalValue = value.replace(/\D/g, '').slice(0, 6)
+    }
+
+    setFormData(prev => ({ ...prev, [name]: finalValue }))
+    // Clear error for this field
+    if (formErrors[name]) {
+      setFormErrors(prev => ({ ...prev, [name]: '' }))
+    }
+  }
+
+  const validateForm = () => {
+    const errors = {}
+
+    if (!formData.fullName.trim()) errors.fullName = 'Full name is required'
+    if (!formData.phone.trim()) {
+      errors.phone = 'Phone is required'
+    } else if (formData.phone.length < 10) {
+      errors.phone = 'Phone must be 10 digits'
+    }
+    if (!formData.line1.trim()) errors.line1 = 'Address is required'
+    if (!formData.city.trim()) errors.city = 'City is required'
+    if (!formData.state.trim()) errors.state = 'State is required'
+    if (!formData.pincode.trim()) {
+      errors.pincode = 'Pincode is required'
+    } else if (formData.pincode.length < 6) {
+      errors.pincode = 'Pincode must be 6 digits'
+    }
+
+    return errors
   }
 
   if (loading) {
@@ -140,31 +187,41 @@ const AddressStep = ({ selectedAddress, onSelect, onContinue }) => {
           <form onSubmit={handleAddAddress} className="card space-y-4 p-4 border-2 border-indigo-200">
             <h3 className="font-semibold mb-4">Enter Delivery Address</h3>
 
-            <FormInput
-              label="Full Name"
-              name="fullName"
-              value={formData.fullName}
-              onChange={handleInputChange}
-              required
-            />
+            <div>
+              <FormInput
+                label="Full Name"
+                name="fullName"
+                value={formData.fullName}
+                onChange={handleInputChange}
+                required
+              />
+              {formErrors.fullName && <p className="text-red-500 text-sm mt-1">{formErrors.fullName}</p>}
+            </div>
 
-            <FormInput
-              label="Phone"
-              name="phone"
-              type="tel"
-              value={formData.phone}
-              onChange={handleInputChange}
-              required
-            />
+            <div>
+              <FormInput
+                label="Phone"
+                name="phone"
+                type="tel"
+                value={formData.phone}
+                onChange={handleInputChange}
+                placeholder="10 digit mobile number"
+                required
+              />
+              {formErrors.phone && <p className="text-red-500 text-sm mt-1">{formErrors.phone}</p>}
+            </div>
 
-            <FormInput
-              label="Address Line 1"
-              name="line1"
-              value={formData.line1}
-              onChange={handleInputChange}
-              required
-              placeholder="House no., street name"
-            />
+            <div>
+              <FormInput
+                label="Address Line 1"
+                name="line1"
+                value={formData.line1}
+                onChange={handleInputChange}
+                required
+                placeholder="House no., street name"
+              />
+              {formErrors.line1 && <p className="text-red-500 text-sm mt-1">{formErrors.line1}</p>}
+            </div>
 
             <FormInput
               label="Address Line 2 (optional)"
@@ -175,29 +232,39 @@ const AddressStep = ({ selectedAddress, onSelect, onContinue }) => {
             />
 
             <div className="grid grid-cols-2 gap-4">
-              <FormInput
-                label="City"
-                name="city"
-                value={formData.city}
-                onChange={handleInputChange}
-                required
-              />
-              <FormInput
-                label="State"
-                name="state"
-                value={formData.state}
-                onChange={handleInputChange}
-                required
-              />
+              <div>
+                <FormInput
+                  label="City"
+                  name="city"
+                  value={formData.city}
+                  onChange={handleInputChange}
+                  required
+                />
+                {formErrors.city && <p className="text-red-500 text-sm mt-1">{formErrors.city}</p>}
+              </div>
+              <div>
+                <FormInput
+                  label="State"
+                  name="state"
+                  value={formData.state}
+                  onChange={handleInputChange}
+                  required
+                />
+                {formErrors.state && <p className="text-red-500 text-sm mt-1">{formErrors.state}</p>}
+              </div>
             </div>
 
-            <FormInput
-              label="Pincode"
-              name="pincode"
-              value={formData.pincode}
-              onChange={handleInputChange}
-              required
-            />
+            <div>
+              <FormInput
+                label="Pincode"
+                name="pincode"
+                value={formData.pincode}
+                onChange={handleInputChange}
+                placeholder="6 digit pincode"
+                required
+              />
+              {formErrors.pincode && <p className="text-red-500 text-sm mt-1">{formErrors.pincode}</p>}
+            </div>
 
             <button
               type="submit"

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { ShoppingCart, ChevronLeft, ChevronRight, Trash2 } from 'lucide-react';
+import { ShoppingCart, ChevronLeft, ChevronRight, Trash2, Star, Package, Truck, Shield, Tag } from 'lucide-react';
 import Navbar from '../../components/shared/Navbar';
 import Breadcrumb from '../../components/shop/Breadcrumb';
 import RatingStars from '../../components/shop/RatingStars';
@@ -298,6 +298,24 @@ export default function ProductDetailPage() {
                                 </button>
                             </div>
 
+                            {/* Available On - Platforms */}
+                            <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-xl p-6 border border-purple-200">
+                                <div className="flex items-center gap-2 mb-4">
+                                    <Tag className="w-5 h-5 text-purple-600" />
+                                    <h3 className="font-bold text-lg text-gray-900">Also Available On</h3>
+                                </div>
+                                <div className="flex gap-4 flex-wrap">
+                                    <a href="#" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 bg-white px-4 py-2 rounded-lg border border-purple-200 hover:shadow-md transition-all hover:border-purple-400">
+                                        <img src="https://img.icons8.com/color/48/000000/flipkart.png" alt="Flipkart" className="w-6 h-6" />
+                                        <span className="font-semibold text-gray-800">Flipkart</span>
+                                    </a>
+                                    <a href="#" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 bg-white px-4 py-2 rounded-lg border border-blue-200 hover:shadow-md transition-all hover:border-blue-400">
+                                        <img src="https://img.icons8.com/color/48/000000/amazon.png" alt="Amazon" className="w-6 h-6" />
+                                        <span className="font-semibold text-gray-800">Amazon</span>
+                                    </a>
+                                </div>
+                            </div>
+
                             {/* Product Meta - Modern */}
                             <div className="border-t border-gray-200 pt-6 space-y-4">
                                 <div className="flex justify-between items-center">
@@ -327,7 +345,87 @@ export default function ProductDetailPage() {
                     </div>
                 </div>
 
-                {/* Tabs Section - Modern Design */}
+                {/* Product Information Box - Key Details */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                    {/* Free Shipping */}
+                    <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow text-center">
+                        <div className="inline-block p-3 bg-green-100 rounded-full mb-4">
+                            <Truck className="w-8 h-8 text-green-600" />
+                        </div>
+                        <h3 className="font-bold text-gray-900 mb-2">Free Shipping</h3>
+                        <p className="text-gray-600 text-sm">On orders above ₹500</p>
+                    </div>
+
+                    {/* Secure Payment */}
+                    <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow text-center">
+                        <div className="inline-block p-3 bg-blue-100 rounded-full mb-4">
+                            <Shield className="w-8 h-8 text-blue-600" />
+                        </div>
+                        <h3 className="font-bold text-gray-900 mb-2">100% Secure</h3>
+                        <p className="text-gray-600 text-sm">SSL Encrypted Payments</p>
+                    </div>
+
+                    {/* Easy Returns */}
+                    <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow text-center">
+                        <div className="inline-block p-3 bg-purple-100 rounded-full mb-4">
+                            <Package className="w-8 h-8 text-purple-600" />
+                        </div>
+                        <h3 className="font-bold text-gray-900 mb-2">Easy Returns</h3>
+                        <p className="text-gray-600 text-sm">30-day return policy</p>
+                    </div>
+
+                    {/* 24/7 Support */}
+                    <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow text-center">
+                        <div className="inline-block p-3 bg-orange-100 rounded-full mb-4">
+                            <Star className="w-8 h-8 text-orange-600" />
+                        </div>
+                        <h3 className="font-bold text-gray-900 mb-2">24/7 Support</h3>
+                        <p className="text-gray-600 text-sm">Live chat & phone support</p>
+                    </div>
+                </div>
+
+                {/* Product Specifications */}
+                <div className="bg-white rounded-2xl shadow-lg p-8 mb-12">
+                    <h2 className="text-3xl font-bold text-gray-900 mb-8">Product Specifications</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div className="space-y-6">
+                            <div className="border-b border-gray-200 pb-4">
+                                <p className="text-sm text-gray-600 font-semibold uppercase mb-1">SKU</p>
+                                <p className="text-lg text-gray-900">{product.sku || 'SKU-' + product._id?.substring(0, 8)}</p>
+                            </div>
+                            <div className="border-b border-gray-200 pb-4">
+                                <p className="text-sm text-gray-600 font-semibold uppercase mb-1">Category</p>
+                                <p className="text-lg text-gray-900">{product.category?.name || 'Uncategorized'}</p>
+                            </div>
+                            <div className="border-b border-gray-200 pb-4">
+                                <p className="text-sm text-gray-600 font-semibold uppercase mb-1">Availability</p>
+                                <p className={`text-lg font-semibold ${product.stock > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                    {product.stock > 0 ? `In Stock (${product.stock} items)` : 'Out of Stock'}
+                                </p>
+                            </div>
+                        </div>
+                        <div className="space-y-6">
+                            <div className="border-b border-gray-200 pb-4">
+                                <p className="text-sm text-gray-600 font-semibold uppercase mb-1">Discount</p>
+                                <div className="flex items-center gap-2">
+                                    <span className="text-2xl font-bold text-green-600">{product.discount || 0}%</span>
+                                    <span className="text-gray-500 line-through">₹{product.comparePrice?.toLocaleString('en-IN')}</span>
+                                </div>
+                            </div>
+                            <div className="border-b border-gray-200 pb-4">
+                                <p className="text-sm text-gray-600 font-semibold uppercase mb-1">Price</p>
+                                <p className="text-2xl font-bold text-indigo-600">₹{product.price?.toLocaleString('en-IN')}</p>
+                            </div>
+                            <div className="border-b border-gray-200 pb-4">
+                                <p className="text-sm text-gray-600 font-semibold uppercase mb-1">Average Rating</p>
+                                <div className="flex items-center gap-3">
+                                    <span className="text-2xl font-bold text-yellow-500">{product.averageRating?.toFixed(1) || '0'}</span>
+                                    <span className="text-gray-600">({product.numReviews || 0} reviews)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div className="bg-white rounded-2xl shadow-lg overflow-hidden mb-12">
                     {/* Tab Navigation */}
                     <div className="flex border-b-2 border-gray-200 bg-gray-50">

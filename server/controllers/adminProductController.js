@@ -181,9 +181,9 @@ exports.createProduct = async (req, res) => {
             category,
             tags: tagsArray,
             stock: parseInt(stock),
-            images,
+            images: images.length > 0 ? images : ['https://via.placeholder.com/300x400?text=No+Image'],
             isFeatured: isFeatured === 'true' || isFeatured === true,
-            isActive: isActive === 'true' || isActive === true,
+            isActive: isActive === 'false' ? false : true, // Default to true unless explicitly false
         });
 
         // Populate and return
@@ -246,7 +246,7 @@ exports.updateProduct = async (req, res) => {
         if (category) product.category = category;
         if (stock !== undefined) product.stock = parseInt(stock);
         if (isFeatured !== undefined) product.isFeatured = isFeatured === 'true' || isFeatured === true;
-        if (isActive !== undefined) product.isActive = isActive === 'true' || isActive === true;
+        if (isActive !== undefined) product.isActive = isActive === 'false' ? false : true; // Default to true unless explicitly false
         if (tags) {
             product.tags = tags
                 .split(',')
@@ -254,16 +254,32 @@ exports.updateProduct = async (req, res) => {
                 .filter((tag) => tag);
         }
 
-        // Handle images
-        if (existingImages) {
-            // Replace images with existing list (allows deletion)
+        // Handle images - properly merge existing and new
+        const hasExistingImages = existingImages !== undefined && existingImages !== null && existingImages !== '';
+        const hasNewFiles = req.files && req.files.length > 0;
+
+        if (hasNewFiles) {
+            // New files are being uploaded
+            const newImageUrls = req.files.map((file) => file.path);
+
+            if (hasExistingImages) {
+                // Merge existing images with new ones
+                const existingImageList = JSON.parse(existingImages);
+                // Filter out placeholder images when adding real images
+                const filteredExisting = existingImageList.filter(
+                    (img) => !img.includes('placeholder.com')
+                );
+                product.images = [...filteredExisting, ...newImageUrls];
+            } else {
+                // No existing images, just use new ones
+                product.images = newImageUrls;
+            }
+        } else if (hasExistingImages) {
+            // Only updating the existing images list (deletion case)
             const newImages = JSON.parse(existingImages);
-            product.images = newImages;
-        } else if (req.files && req.files.length > 0) {
-            // Append new images
-            const newImages = req.files.map((file) => file.path);
-            product.images = [...(product.images || []), ...newImages];
+            product.images = newImages.length > 0 ? newImages : product.images; // Keep old if clearing
         }
+        // If neither, keep existing product.images as is
 
         // Save
         await product.save();

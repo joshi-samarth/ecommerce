@@ -16,11 +16,20 @@ export default function ProductsPage() {
     const [priceRange, setPriceRange] = useState({ minPrice: 0, maxPrice: 10000 });
 
     // Get initial filters from URL params
+    // Clean up single-character search terms that shouldn't be in URL (like 't')
+    let initialSearch = searchParams.get('search') || '';
+    if (initialSearch && initialSearch.length <= 1) {
+        initialSearch = '';
+    }
+
     const initialFilters = {
-        search: searchParams.get('search') || '',
+        search: initialSearch,
         category: searchParams.get('category') || '',
         minPrice: searchParams.get('minPrice') || '',
         maxPrice: searchParams.get('maxPrice') || '',
+        minRating: searchParams.get('minRating') || '',
+        minDiscount: searchParams.get('minDiscount') || '',
+        inStock: searchParams.get('inStock') || '',
         sort: searchParams.get('sort') || 'newest',
         page: parseInt(searchParams.get('page')) || 1,
     };
@@ -68,7 +77,8 @@ export default function ProductsPage() {
     // Update URL params when filters change
     useEffect(() => {
         const params = new URLSearchParams();
-        if (filters.search) params.append('search', filters.search);
+        // Only add search if it's more than 1 character (prevents 't' or single chars)
+        if (filters.search && filters.search.length > 1) params.append('search', filters.search);
         if (filters.category) params.append('category', filters.category);
         if (filters.minPrice) params.append('minPrice', filters.minPrice);
         if (filters.maxPrice) params.append('maxPrice', filters.maxPrice);

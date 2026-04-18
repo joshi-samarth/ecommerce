@@ -6,6 +6,7 @@ import toast from 'react-hot-toast'
 import Navbar from '../../components/shared/Navbar'
 import OrderStatusStepper from '../../components/orders/OrderStatusStepper'
 import OrderItemsList from '../../components/orders/OrderItemsList'
+import RateProductCard from '../../components/orders/RateProductCard'
 
 const ConfirmDialog = ({ isOpen, message, onConfirm, onCancel, showReasonInput }) => {
   const [reason, setReason] = useState('')
@@ -150,6 +151,31 @@ const OrderDetailPage = () => {
                 <h3 className="font-semibold text-lg mb-4">Order Items</h3>
                 <OrderItemsList items={order.items} />
               </div>
+
+              {/* Rating Section - Show only for delivered orders */}
+              {order.orderStatus === 'delivered' && (
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2 mb-4">
+                    <h3 className="font-semibold text-lg">Rate & Review</h3>
+                    <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">
+                      {order.items.length} {order.items.length === 1 ? 'item' : 'items'}
+                    </span>
+                  </div>
+                  {order.items.map((item, index) => (
+                    <RateProductCard
+                      key={index}
+                      product={{
+                        name: item.name,
+                        slug: item.product?.slug || item.slug,
+                        image: item.image
+                      }}
+                      onSuccess={() => {
+                        // Optionally refresh order to show updated ratings
+                      }}
+                    />
+                  ))}
+                </div>
+              )}
 
               {/* Price Breakdown */}
               <div className="bg-white rounded-lg p-6 border">

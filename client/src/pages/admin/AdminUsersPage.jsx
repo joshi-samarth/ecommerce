@@ -386,7 +386,6 @@ const AdminUsersPage = () => {
                                 <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Email</th>
                                 <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Role</th>
                                 <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Joined</th>
-                                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -425,20 +424,6 @@ const AdminUsersPage = () => {
                                             </td>
                                             <td className="px-6 py-4">
                                                 <div className="text-sm text-gray-600">{formatDate(user.createdAt)}</div>
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                <button
-                                                    onClick={() => handleToggleRole(user._id, user.role)}
-                                                    disabled={isCurrentUser}
-                                                    className={`px-3 py-1 rounded text-sm font-medium transition ${isCurrentUser
-                                                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                                                        : user.role === 'admin'
-                                                            ? 'bg-blue-100 text-blue-700 hover:bg-blue-200'
-                                                            : 'bg-purple-100 text-purple-700 hover:bg-purple-200'
-                                                        }`}
-                                                >
-                                                    {user.role === 'admin' ? 'Make User' : 'Make Admin'}
-                                                </button>
                                             </td>
                                         </tr>
                                     );
