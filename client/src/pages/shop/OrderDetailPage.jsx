@@ -260,6 +260,33 @@ const OrderDetailPage = () => {
                 </div>
               </div>
 
+              {/* Cancellation Info */}
+              {order.orderStatus === 'cancelled' && (
+                <div className="bg-red-50 rounded-lg p-6 border border-red-200">
+                  <h4 className="font-semibold text-red-900 mb-3">Order Cancelled</h4>
+                  <div className="space-y-3 text-sm">
+                    <div>
+                      <p className="text-red-700">Cancelled On</p>
+                      <p className="font-medium">
+                        {new Date(order.cancelledAt).toLocaleString('en-IN')}
+                      </p>
+                    </div>
+                    {order.cancellationReason && (
+                      <div>
+                        <p className="text-red-700">Reason</p>
+                        <p className="font-medium">{order.cancellationReason}</p>
+                      </div>
+                    )}
+                    {order.paymentStatus === 'refunded' && (
+                      <div className="border-t border-red-200 pt-3 bg-green-50 p-3 rounded">
+                        <p className="text-green-700 font-semibold">✓ Refund Initiated</p>
+                        <p className="text-green-600 text-xs mt-1">Amount of ₹{order.total} will be refunded to your original payment method</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
               {/* Order Summary */}
               <div className="bg-white rounded-lg p-6 border">
                 <h4 className="font-semibold mb-4">Order Summary</h4>
@@ -286,12 +313,13 @@ const OrderDetailPage = () => {
               </div>
 
               {/* Cancel Order */}
-              {order.canBeCancelled && order.canBeCancelled() && (
+              {order.canBeCancelled && (
                 <button
                   onClick={() => setShowCancelDialog(true)}
-                  className="w-full px-4 py-2 border-2 border-red-600 text-red-600 rounded-lg hover:bg-red-50 font-semibold transition-colors"
+                  disabled={cancelling}
+                  className="w-full px-4 py-2 border-2 border-red-600 text-red-600 rounded-lg hover:bg-red-50 font-semibold transition-colors disabled:opacity-50"
                 >
-                  Cancel Order
+                  {cancelling ? 'Cancelling...' : 'Cancel Order'}
                 </button>
               )}
             </div>

@@ -182,9 +182,16 @@ const getMyOrders = async (req, res) => {
 
     const total = await Order.countDocuments(filter)
 
+    // Add canBeCancelled flag to each order
+    const ordersWithFlags = orders.map(order => {
+      const orderObj = order.toObject()
+      orderObj.canBeCancelled = order.canBeCancelled()
+      return orderObj
+    })
+
     return res.status(200).json({
       success: true,
-      data: orders,
+      data: ordersWithFlags,
       pagination: {
         page: parseInt(page),
         limit: parseInt(limit),
@@ -226,9 +233,13 @@ const getOrderById = async (req, res) => {
       })
     }
 
+    // Add canBeCancelled flag to response
+    const orderResponse = order.toObject()
+    orderResponse.canBeCancelled = order.canBeCancelled()
+
     return res.status(200).json({
       success: true,
-      data: order
+      data: orderResponse
     })
   } catch (error) {
     console.error('Get order by ID error:', error)
