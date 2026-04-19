@@ -9,6 +9,10 @@ const {
     resendOTP,
     logoutUser,
     getMe,
+    changePassword,
+    sendPasswordResetOTP,
+    resetPassword,
+    verifyAdminSecret,
 } = require('../controllers/authController');
 const { seedUsers } = require('../controllers/seedController');
 const protect = require('../middleware/protect');
@@ -29,6 +33,12 @@ router.post('/admin/verify-otp', adminLoginVerifyOTP);
 
 // Resend OTP (for both registration and admin)
 router.post('/resend-otp', resendOTP);
+
+// Password Management
+router.post('/change-password', protect, changePassword); // Change password (logged in user/admin)
+router.post('/verify-admin-secret', verifyAdminSecret); // Verify admin secret key for forgot password
+router.post('/forget-password/send-otp', sendPasswordResetOTP); // Send reset OTP
+router.post('/forget-password/reset', resetPassword); // Reset password via OTP
 
 // Logout
 router.post('/logout', logoutUser);

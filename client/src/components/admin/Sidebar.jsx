@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LogOut, BarChart, Package, FolderOpen, Ticket, ShoppingCart, Users } from 'lucide-react';
+import { LogOut, BarChart, Package, FolderOpen, Ticket, ShoppingCart, Users, Lock } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 const Sidebar = () => {
@@ -85,6 +85,19 @@ const Sidebar = () => {
                                 <p className="text-xs text-gray-500 capitalize">{user?.role}</p>
                             </div>
                         </div>
+                        <NavLink
+                            to="/admin/change-password"
+                            className={({ isActive }) =>
+                                `w-full text-white py-2.5 rounded-lg font-medium transition-all flex items-center justify-center gap-2 text-sm mb-2 ${isActive
+                                    ? 'bg-indigo-600 hover:bg-indigo-700'
+                                    : 'bg-gray-700 hover:bg-gray-600'
+                                }`
+                            }
+                            onClick={() => setIsOpen(false)}
+                        >
+                            <Lock size={16} />
+                            Change Password
+                        </NavLink>
                         <button
                             onClick={handleLogout}
                             className="w-full bg-red-600 hover:bg-red-700 text-white py-2.5 rounded-lg font-medium transition-all flex items-center justify-center gap-2 text-sm"

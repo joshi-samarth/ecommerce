@@ -96,6 +96,16 @@ const UserLoginPage = () => {
                                 <LogIn size={18} />
                                 {loading ? 'Signing in...' : 'Sign In'}
                             </button>
+
+                            {/* Forgot Password Link */}
+                            <div className="text-center mt-3">
+                                <Link
+                                    to="/forgot-password"
+                                    className="text-sm text-gray-600 hover:text-indigo-600 transition font-medium"
+                                >
+                                    Forgot Password?
+                                </Link>
+                            </div>
                         </form>
 
                         {/* Register Link */}

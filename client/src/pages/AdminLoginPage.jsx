@@ -169,6 +169,16 @@ const AdminLoginPage = () => {
                         >
                             {loading ? 'Verifying...' : 'Send Verification Code →'}
                         </button>
+
+                        {/* Forgot Password Link */}
+                        <div className="text-center mt-3">
+                            <Link
+                                to="/admin/forgot-password"
+                                className="text-sm text-gray-600 hover:text-purple-600 transition font-medium"
+                            >
+                                Forgot Password?
+                            </Link>
+                        </div>
                     </form>
 
                     <div className="mt-6 pt-6 border-t border-gray-200">

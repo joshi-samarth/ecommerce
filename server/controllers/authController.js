@@ -507,6 +507,241 @@ const resendOTP = async (req, res) => {
     }
 };
 
+// @desc    Change Password (Admin or User)
+// @route   POST /api/auth/change-password
+// @access  Private
+const changePassword = async (req, res) => {
+    try {
+        const { currentPassword, newPassword, confirmPassword } = req.body;
+        const userId = req.user._id;
+
+        // Validation
+        if (!currentPassword || !newPassword || !confirmPassword) {
+            return res.status(400).json({
+                success: false,
+                message: 'Please provide current password, new password and confirmation'
+            });
+        }
+
+        if (newPassword !== confirmPassword) {
+            return res.status(400).json({
+                success: false,
+                message: 'Passwords do not match'
+            });
+        }
+
+        if (currentPassword === newPassword) {
+            return res.status(400).json({
+                success: false,
+                message: 'New password must be different from current password'
+            });
+        }
+
+        // Validate password strength: min 8 chars, uppercase, lowercase, numbers, special chars
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        if (!passwordRegex.test(newPassword)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Password must be min 8 characters with uppercase, lowercase, numbers & special chars (@$!%*?&)'
+            });
+        }
+
+        // Get user with password
+        const user = await User.findById(userId).select('+password');
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+        }
+
+        // Check if current password matches
+        const isMatch = await user.matchPassword(currentPassword);
+        if (!isMatch) {
+            return res.status(401).json({
+                success: false,
+                message: 'Current password is incorrect'
+            });
+        }
+
+        // Update password
+        user.password = newPassword;
+        await user.save();
+
+        res.status(200).json({
+            success: true,
+            message: 'Password changed successfully'
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
+// @desc    Send Password Reset OTP
+// @route   POST /api/auth/forget-password/send-otp
+// @access  Public
+const sendPasswordResetOTP = async (req, res) => {
+    try {
+        const { email } = req.body;
+
+        if (!email) {
+            return res.status(400).json({
+                success: false,
+                message: 'Please provide email address'
+            });
+        }
+
+        // Check if user exists
+        const user = await User.findOne({ email: email.toLowerCase() });
+        if (!user) {
+            // Don't reveal if email exists for security
+            return res.status(200).json({
+                success: true,
+                message: 'If this email exists in our system, password reset link has been sent'
+            });
+        }
+
+        // Generate OTP
+        const otp = generateOTP();
+
+        // Delete previous OTPs for this email
+        await OTP.deleteMany({ email: email.toLowerCase(), purpose: 'password_reset' });
+
+        // Save OTP
+        await OTP.create({
+            email: email.toLowerCase(),
+            otp,
+            purpose: 'password_reset'
+        });
+
+        // Send OTP via email
+        setImmediate(() => {
+            sendOTPEmail(email, otp, 'password_reset').catch(err => {
+                console.error('Background email send failed:', err);
+            });
+        });
+
+        res.status(200).json({
+            success: true,
+            message: 'Password reset OTP sent to your email. Check your inbox!',
+            data: {
+                email
+            }
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
+// @desc    Verify Password Reset OTP and Reset Password
+// @route   POST /api/auth/forget-password/reset
+// @access  Public
+const resetPassword = async (req, res) => {
+    try {
+        const { email, otp, newPassword, confirmPassword } = req.body;
+
+        // Validation
+        if (!email || !otp || !newPassword || !confirmPassword) {
+            return res.status(400).json({
+                success: false,
+                message: 'Please provide email, OTP, new password and confirmation'
+            });
+        }
+
+        if (newPassword !== confirmPassword) {
+            return res.status(400).json({
+                success: false,
+                message: 'Passwords do not match'
+            });
+        }
+
+        // Validate password strength
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        if (!passwordRegex.test(newPassword)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Password must be min 8 characters with uppercase, lowercase, numbers & special chars (@$!%*?&)'
+            });
+        }
+
+        // Verify OTP
+        const otpVerification = await verifyOTP(OTP, email, otp, 'password_reset');
+
+        if (!otpVerification.success) {
+            return res.status(400).json({
+                success: false,
+                message: otpVerification.message
+            });
+        }
+
+        // Find user
+        const user = await User.findOne({ email: email.toLowerCase() });
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+        }
+
+        // Update password
+        user.password = newPassword;
+        await user.save();
+
+        // Delete used OTP
+        await OTP.deleteOne({ email: email.toLowerCase(), purpose: 'password_reset', verified: true });
+
+        res.status(200).json({
+            success: true,
+            message: 'Password reset successfully. You can now login with your new password'
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
+// @desc    Verify Admin Secret Key (for forgot password)
+// @route   POST /api/auth/verify-admin-secret
+// @access  Public
+const verifyAdminSecret = async (req, res) => {
+    try {
+        const { secretKey } = req.body;
+
+        if (!secretKey) {
+            return res.status(400).json({
+                success: false,
+                message: 'Secret key is required'
+            });
+        }
+
+        // Compare with backend secret key
+        if (secretKey !== process.env.ADMIN_SECRET_KEY) {
+            return res.status(401).json({
+                success: false,
+                message: 'Invalid admin secret key'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: 'Secret key verified successfully'
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
 module.exports = {
     registerUser,
     sendRegistrationOTP,
@@ -517,4 +752,8 @@ module.exports = {
     resendOTP,
     logoutUser,
     getMe,
+    changePassword,
+    sendPasswordResetOTP,
+    resetPassword,
+    verifyAdminSecret
 };

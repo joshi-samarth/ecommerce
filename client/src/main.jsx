@@ -11,6 +11,8 @@ import AdminRoute from './components/AdminRoute';
 import UserLoginPage from './pages/UserLoginPage';
 import AdminLoginPage from './pages/AdminLoginPage';
 import UserRegisterPage from './pages/UserRegisterPage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import AdminForgotPasswordPage from './pages/AdminForgotPasswordPage';
 import HomePage from './pages/HomePage';
 import NotFoundPage from './pages/NotFoundPage';
 import AdminLayout from './layouts/AdminLayout';
@@ -22,6 +24,7 @@ import AdminCategoriesPage from './pages/admin/AdminCategoriesPage';
 import AdminCouponsPage from './pages/admin/AdminCouponsPage';
 import AdminOrdersPage from './pages/admin/orders/AdminOrdersPage';
 import AdminOrderDetailPage from './pages/admin/orders/AdminOrderDetailPage';
+import AdminChangePasswordPage from './pages/admin/AdminChangePasswordPage';
 import UserLayout from './layouts/UserLayout';
 import AccountPage from './pages/user/AccountPage';
 import ProfileTab from './pages/user/ProfileTab';
@@ -44,6 +47,8 @@ function App() {
                 <Route path="/login" element={<UserLoginPage />} />
                 <Route path="/admin-login" element={<AdminLoginPage />} />
                 <Route path="/register" element={<UserRegisterPage />} />
+                <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                <Route path="/admin/forgot-password" element={<AdminForgotPasswordPage />} />
 
                 {/* Private Routes */}
                 <Route element={<PrivateRoute />}>
@@ -81,6 +86,7 @@ function App() {
                         <Route path="coupons" element={<AdminCouponsPage />} />
                         <Route path="orders" element={<AdminOrdersPage />} />
                         <Route path="orders/:id" element={<AdminOrderDetailPage />} />
+                        <Route path="change-password" element={<AdminChangePasswordPage />} />
                     </Route>
                 </Route>
 
