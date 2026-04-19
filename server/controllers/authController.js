@@ -224,11 +224,11 @@ const loginUser = async (req, res) => {
             });
         }
 
-        // If user is admin, redirect to admin login
+        // If user is admin, reject with generic message (security: don't reveal role)
         if (user.role === 'admin') {
-            return res.status(400).json({
+            return res.status(401).json({
                 success: false,
-                message: 'admin'
+                message: 'Invalid credentials'
             });
         }
 

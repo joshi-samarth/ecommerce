@@ -404,3 +404,25 @@ exports.removeCoupon = async (req, res) => {
         });
     }
 };
+
+// @route   GET /api/coupons/available
+// @desc    Get available coupons for users
+// @access  Public
+exports.getAvailableCoupons = async (req, res) => {
+    try {
+        const availableCoupons = await Coupon.find({
+            isActive: true,
+            expiresAt: { $gt: new Date() }
+        }).select('code type value minOrderValue maxDiscount').sort({ createdAt: -1 });
+
+        res.status(200).json({
+            success: true,
+            data: availableCoupons,
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
+};

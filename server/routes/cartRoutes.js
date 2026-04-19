@@ -9,9 +9,13 @@ const {
     clearCart,
     applyCoupon,
     removeCoupon,
+    getAvailableCoupons,
 } = require('../controllers/cartController');
 
-// All cart routes are protected
+// Public route - get available coupons
+router.get('/coupons/available', getAvailableCoupons);
+
+// All other cart routes are protected
 router.use(protect);
 
 router.get('/', getCart);

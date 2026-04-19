@@ -47,29 +47,8 @@ const UserLoginPage = () => {
                 {/* Login Card */}
                 <div className="card">
                     <div className="card-body space-y-6">
-                        {error === 'admin' ? (
-                            // Admin Account Card
-                            <div className="p-4 bg-gradient-to-br from-purple-50 to-purple-100 border border-purple-300 rounded-lg">
-                                <div className="flex items-start gap-3">
-                                    <div className="flex-shrink-0">
-                                        <span className="text-3xl">🛡️</span>
-                                    </div>
-                                    <div className="flex-1">
-                                        <h3 className="font-semibold text-purple-900 mb-1">Admin Account</h3>
-                                        <p className="text-sm text-purple-700 mb-3">
-                                            This account has admin privileges. Please use the secure admin login instead.
-                                        </p>
-                                        <button
-                                            onClick={() => navigate('/admin-login')}
-                                            className="btn btn-sm bg-purple-600 hover:bg-purple-700 text-white border-0"
-                                        >
-                                            Go to Admin Login →
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        ) : error ? (
-                            // Regular Error Card
+                        {error ? (
+                            // Error Card
                             <div className="p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
                                 <p className="font-medium">✕ {error}</p>
                             </div>
