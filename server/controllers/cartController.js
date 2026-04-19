@@ -406,14 +406,18 @@ exports.removeCoupon = async (req, res) => {
 };
 
 // @route   GET /api/coupons/available
-// @desc    Get available coupons for users
+// @desc    Get available coupons for users (excluding used up coupons)
 // @access  Public
 exports.getAvailableCoupons = async (req, res) => {
     try {
         const availableCoupons = await Coupon.find({
             isActive: true,
-            expiresAt: { $gt: new Date() }
-        }).select('code type value minOrderValue maxDiscount').sort({ createdAt: -1 });
+            expiresAt: { $gt: new Date() },
+            $or: [
+                { usageLimit: 0 }, // Unlimited usage
+                { $expr: { $lt: ['$usedCount', '$usageLimit'] } } // Haven't reached limit
+            ]
+        }).select('code type value minOrderValue maxDiscount usageLimit usedCount').sort({ createdAt: -1 });
 
         res.status(200).json({
             success: true,
